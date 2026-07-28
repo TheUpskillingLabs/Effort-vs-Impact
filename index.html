@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Civics &amp; Elections: Signal Pool — Closing the Loop Pod</title>
+<meta name="description" content="Effort v. Impact — a Frame Creation problem map from The Upskilling Labs. Why civic engagement feels pointless, and what the evidence says.">
+<style>
+:root{
+  --paper:#f6f2e6; --ink:#152238; --ink2:#3d4a63; --accent:#c1932f; --accent-rgb:193,147,47;
+  --on-accent:#152238; --fog:#5c6577; --fog-dim:#8b93a3; --line:rgba(21,34,56,.14);
+  --card-bg:rgba(21,34,56,.035); --radius:4px; --head-font:Georgia,'Times New Roman',serif;
+  --accent-dim:rgba(var(--accent-rgb),.16);
+  --navy:#152238; --navy-soft:#1d2f4d;
+  --t3:#c1932f; --t2:#5b7fa6; --t1:#7a8a7f;
+  --maxw:1120px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+section{padding:76px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+h1,h2,h3,h4{font-family:var(--head-font);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+h2{font-size:clamp(24px,3.4vw,36px);margin-bottom:12px}
+h3{font-size:17px;margin-bottom:6px}
+p{margin-bottom:14px}
+a{color:inherit}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:16px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--accent);opacity:.7}
+.lede{font-size:clamp(16px,1.8vw,19px);color:var(--ink2);max-width:70ch}
+.muted{color:var(--fog);font-size:14.5px}
+.tiny{font-size:11.5px;color:var(--fog-dim);letter-spacing:.03em}
+.center{text-align:center}
+
+/* ---------- top nav ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(246,242,230,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:60px}
+.tb-brand{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog-dim);white-space:nowrap}
+.tb-brand b{color:var(--ink)}
+.tb-links{display:flex;align-items:center;gap:22px}
+.tb-links a{font-size:12.5px;text-decoration:none;color:var(--fog);font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.tb-links a:hover{color:var(--accent)}
+.tb-links a.cta{background:var(--accent);color:var(--on-accent);padding:8px 16px;border-radius:999px;font-weight:700}
+@media(max-width:860px){.tb-links a:not(.cta){display:none}}
+
+/* ---------- hero ---------- */
+.hero{background:
+    radial-gradient(900px 520px at 12% -20%, rgba(var(--accent-rgb),.16), transparent 62%),
+    radial-gradient(700px 460px at 96% 120%, rgba(29,47,77,.10), transparent 58%),
+    var(--paper);
+  padding:92px 0 72px;border-top:none}
+.hero h1{font-size:clamp(38px,6.4vw,66px);margin-bottom:8px}
+.hero .sub{font-family:var(--head-font);font-size:clamp(17px,2.1vw,22px);color:var(--accent);font-style:italic;margin-bottom:22px}
+.hero .lede{font-size:clamp(16.5px,1.9vw,20px);color:var(--ink2);max-width:66ch}
+.hero-grid{display:grid;grid-template-columns:1.55fr .95fr;gap:48px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:34px}}
+.btn{display:inline-block;border:1px solid var(--accent);color:var(--on-accent);background:var(--accent);
+  font-weight:700;font-size:13.5px;padding:12px 24px;border-radius:999px;text-decoration:none;transition:.2s}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent);background:var(--accent-dim)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+/* pulsing signal mark */
+.signal{width:190px;height:190px;position:relative;margin:0 auto}
+.signal .ring{position:absolute;inset:0;border:1.5px solid var(--accent);border-radius:50%;opacity:0;animation:sp 3.4s ease-out infinite}
+.signal .ring:nth-child(2){animation-delay:1.13s}
+.signal .ring:nth-child(3){animation-delay:2.26s}
+.signal .core{position:absolute;inset:44%;background:var(--accent);border-radius:50%}
+@keyframes sp{0%{transform:scale(.3);opacity:.8}75%{opacity:0}100%{transform:scale(1.6);opacity:0}}
+@media(prefers-reduced-motion:reduce){.signal .ring{animation:none;opacity:.25}}
+
+
+/* ---------- ambient decor ---------- */
+section{position:relative;overflow:hidden}
+section > .wrap{position:relative;z-index:1}
+.decor{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.decor > *{position:absolute}
+.decor .st{color:var(--accent);opacity:.07}
+.decor .st.spin{animation:slowspin 52s linear infinite}
+.decor .st.drift{animation:drift 14s ease-in-out infinite alternate}
+.decor .st.tw{animation:tw 6s ease-in-out infinite}
+@keyframes slowspin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(-18px)}}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.15}}
+.decor .rings{width:160px;height:160px}
+.decor .rings i{position:absolute;inset:0;border:1.5px solid var(--accent);border-radius:50%;opacity:0;animation:sp 4.8s ease-out infinite}
+.decor .rings i:nth-child(2){animation-delay:1.6s}
+.decor .rings i:nth-child(3){animation-delay:3.2s}
+.decor .orb{border-radius:50%;background:radial-gradient(circle at 35% 35%, rgba(var(--accent-rgb),.13), transparent 68%)}
+.footer .decor .st{color:var(--accent);opacity:.10}
+.footer .decor .orb{background:radial-gradient(circle at 35% 35%, rgba(var(--accent-rgb),.14), transparent 68%)}
+@media (prefers-reduced-motion:reduce){.decor .st,.decor .rings i{animation:none}.decor .rings i{opacity:.16}}
+@media (max-width:820px){.decor{display:none}}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-top:44px}
+.stat{background:var(--paper);padding:20px 16px;text-align:center}
+.stat b{display:block;font-family:var(--head-font);font-size:clamp(22px,3vw,32px);color:var(--accent);line-height:1}
+.stat span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);margin-top:7px;font-weight:600}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- generic cards ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card-bg);border-radius:var(--radius);padding:22px 24px}
+.card.hi{background:linear-gradient(180deg,rgba(var(--accent-rgb),.10),transparent 78%)}
+.card .tag{display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px}
+.card p{font-size:14px;color:var(--fog);margin:0}
+.card p+p{margin-top:9px}
+.icon{width:24px;height:24px;color:var(--accent);margin-bottom:12px;display:block}
+.icon-sm{width:16px;height:16px;color:var(--accent);flex:none}
+
+.callout{border-left:3px solid var(--accent);background:rgba(var(--accent-rgb),.07);padding:16px 20px;border-radius:0 var(--radius) var(--radius) 0;margin-top:18px}
+.callout p{margin:0;font-size:14.5px;color:var(--ink2)}
+.callout p+p{margin-top:10px}
+.callout strong{color:var(--ink)}
+
+
+/* ---------- web map ---------- */
+.mapwrap{border:1px solid var(--line);border-radius:var(--radius);background:
+  radial-gradient(700px 380px at 20% 0%, rgba(var(--accent-rgb),.07), transparent 60%),
+  var(--card-bg);
+  padding:10px;margin:24px 0 6px;overflow-x:auto}
+.map-svg{display:block;width:100%;min-width:760px;height:auto}
+.map-cap{display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--fog);margin-bottom:4px}
+.map-cap span{display:flex;align-items:center;gap:7px}
+.map-cap i{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid}
+
+/* ---------- explorer ---------- */
+.exp-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0 18px}
+.exp-search{flex:1;min-width:220px;position:relative}
+.exp-search input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:999px;background:var(--paper);
+  font:inherit;font-size:14px;color:var(--ink);outline:none}
+.exp-search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim)}
+.exp-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--fog-dim)}
+.chip{border:1px solid var(--line);background:transparent;color:var(--fog);font:inherit;font-size:12.5px;font-weight:600;
+  padding:9px 15px;border-radius:999px;cursor:pointer;transition:.18s;white-space:nowrap}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#f6f2e6}
+.chip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+.ladder{display:flex;flex-direction:column;gap:10px}
+.node{border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);overflow:hidden}
+.node.t3{border-left:3px solid var(--t3)}
+.node.t2{border-left:3px solid var(--t2)}
+.node.t1{border-left:3px solid var(--t1)}
+.node-head{display:flex;align-items:flex-start;gap:13px;padding:15px 18px;cursor:pointer;background:transparent;border:none;
+  width:100%;text-align:left;font:inherit;color:inherit}
+.node-head:hover{background:rgba(21,34,56,.03)}
+.node-head .caret{flex:none;width:14px;height:14px;margin-top:4px;color:var(--fog-dim);transition:transform .2s}
+.node.open>.node-head .caret{transform:rotate(90deg)}
+.node-head .txt{flex:1;min-width:0}
+.node-tier{display:inline-block;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.t3 .node-tier{color:var(--t3)} .t2 .node-tier{color:var(--t2)} .t1 .node-tier{color:var(--t1)}
+.node-title{font-family:var(--head-font);font-size:15.5px;font-weight:700;color:var(--ink);line-height:1.3}
+.node-title.untitled{font-style:italic;color:var(--fog-dim);font-weight:400}
+.node-desc{font-size:13.3px;color:var(--fog);margin-top:5px;line-height:1.5}
+.node-meta{flex:none;font-size:10.5px;color:var(--fog-dim);letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-top:4px;white-space:nowrap}
+.node-body{display:none;padding:0 18px 16px 45px;border-top:1px solid var(--line);margin-top:-1px}
+.node.open>.node-body{display:block;padding-top:14px}
+.node-body .ladder{margin-top:0}
+
+.sig{display:flex;gap:11px;padding:10px 13px;border-left:1px solid var(--line);margin-bottom:7px;background:rgba(21,34,56,.02);border-radius:0 var(--radius) var(--radius) 0}
+.sig:last-child{margin-bottom:0}
+.sig .sdot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--fog-dim);margin-top:7px}
+.sig .sname{font-size:13px;font-weight:700;color:var(--ink)}
+.sig .ssum{font-size:12.7px;color:var(--fog);line-height:1.5}
+.sig .stag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--fog-dim);
+  border:1px solid var(--line);border-radius:3px;padding:1px 6px;margin-left:7px;vertical-align:middle;font-weight:700}
+.empty{padding:26px;text-align:center;color:var(--fog-dim);font-size:14px;border:1px dashed var(--line);border-radius:var(--radius)}
+
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--fog);margin-bottom:6px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+/* ---------- research columns ---------- */
+.col h4{display:flex;align-items:center;gap:8px;font-family:inherit;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.col li{font-size:13.2px;line-height:1.55;color:var(--fog);border-left:1px solid var(--line);padding-left:12px}
+.col li b{color:var(--ink);font-weight:600}
+.col li.q{font-style:italic;color:var(--ink2)}
+
+/* ---------- numbered assumptions ---------- */
+.numcard{display:flex;gap:16px;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;background:var(--card-bg);margin-bottom:12px}
+.numcard .n{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.numcard p{font-size:14px;color:var(--ink2);margin:0}
+.numcard b{color:var(--ink)}
+
+/* ---------- timeline ---------- */
+.timeline{overflow-x:auto;padding-bottom:6px;margin-top:24px}
+.timeline-inner{min-width:900px}
+.timeline-headers{display:grid;grid-template-columns:repeat(13,1fr);margin-bottom:30px}
+.timeline-headers .grp{grid-column:span 4;padding-right:14px}
+.timeline-headers .grp:last-child{grid-column:span 5}
+.timeline-headers .grp+.grp{border-left:1px solid var(--line);padding-left:14px}
+.timeline-headers .lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:3px}
+.timeline-headers .ttl{font-family:var(--head-font);font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.25}
+.timeline-track{display:grid;grid-template-columns:repeat(13,1fr);position:relative;padding:44px 0}
+.timeline-track::before{content:"";position:absolute;left:2%;right:2%;top:50%;height:1px;background:var(--line);transform:translateY(-50%)}
+.tl-node{display:flex;justify-content:center;position:relative}
+.tl-node .circle{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);color:var(--fog);
+  display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;position:relative;z-index:1}
+.tl-node.active .circle{width:34px;height:34px;background:var(--accent);border-color:var(--accent);color:var(--on-accent);
+  box-shadow:0 0 0 6px var(--accent-dim);font-size:12.5px}
+.tl-node .label{position:absolute;left:50%;transform:translateX(-50%);width:88px;text-align:center;font-size:10px;line-height:1.3}
+.tl-node .label.above{bottom:calc(100% + 9px)}
+.tl-node .label.below{top:calc(100% + 9px)}
+.tl-node .label .wk{display:block;font-weight:700;color:var(--fog-dim);letter-spacing:.05em;text-transform:uppercase;font-size:9px;margin-bottom:2px}
+.tl-node.active .label .wk{color:var(--accent)}
+.tl-node .label .name{display:block;font-weight:600;color:var(--fog)}
+.tl-node.active .label .name{color:var(--ink);font-weight:700}
+
+/* ---------- appendix / details ---------- */
+details.acc{border:1px solid var(--line);border-radius:var(--radius);background:var(--card-bg);margin-bottom:10px;overflow:hidden}
+details.acc>summary{cursor:pointer;padding:15px 20px;font-weight:700;font-size:14.5px;list-style:none;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;font-family:var(--head-font)}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"+";font-size:19px;color:var(--accent);font-family:ui-sans-serif,system-ui;line-height:1}
+details.acc[open]>summary::after{content:"–"}
+details.acc>summary:hover{background:rgba(21,34,56,.03)}
+.acc-body{padding:4px 20px 20px;border-top:1px solid var(--line)}
+.acc-body p{font-size:14px;color:var(--fog)}
+.acc-body ol,.acc-body ul{margin:0 0 14px 20px;font-size:14px;color:var(--fog)}
+.acc-body li{margin-bottom:7px}
+.acc-body h4{font-size:14px;margin:16px 0 7px;color:var(--ink)}
+
+table.sig-table{width:100%;border-collapse:collapse;font-size:13px}
+table.sig-table th{text-align:left;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--fog-dim);
+  padding:9px 10px;border-bottom:1px solid var(--line);font-weight:700}
+table.sig-table td{padding:10px;border-bottom:1px solid var(--line);color:var(--fog);vertical-align:top}
+table.sig-table td.n{color:var(--ink);font-weight:600;width:30%}
+table.sig-table tr:last-child td{border-bottom:none}
+.tbl-scroll{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius)}
+
+/* ---------- footer ---------- */
+.footer{background:var(--navy);color:#e8ecf3;padding:56px 0 40px;border-top:none}
+.footer h2{color:#fff}
+.sub-tag{font-family:var(--head-font);font-style:italic;font-size:clamp(15px,1.9vw,19px);color:var(--accent);margin:-4px 0 16px}
+.footer .lede{color:#c3ccdb}
+.footer .tiny{color:#8695ad}
+.footer a{color:var(--accent)}
+.footer a.btn{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+.footer a.btn.ghost{color:#e8ecf3;background:transparent;border-color:rgba(255,255,255,.28)}
+.footer a.btn.ghost:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.14)}
+.footer .btn{border-color:var(--accent)}
+.footer-bottom{margin-top:34px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);display:flex;
+  justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:11.5px;color:#8695ad}
+.star.spin{animation:slowspin 70s linear infinite}
+.star{position:absolute;right:-30px;top:-40px;width:230px;height:230px;color:var(--accent);opacity:.07;pointer-events:none}
+.footer .wrap{position:relative;overflow:hidden}
+</style></head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="tb-brand">The <b>Upskilling Labs</b> · Signal Pool</div>
+  <nav class="tb-links">
+    <a href="#problem">The problem</a>
+    <a href="#themes">Themes</a>
+    <a href="#explorer">Evidence</a>
+    <a href="#research">Research</a>
+    <a href="#next">What's next</a>
+    <a href="./slides.html" class="cta">View the pitch →</a>
+  </nav>
+</div></div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="decor"><svg class="st spin" style="left:-60px;bottom:-70px;width:270px;height:270px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st tw" style="right:30%;top:70px;width:40px;height:40px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st drift" style="left:16%;top:40px;width:30px;height:30px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><span class="orb" style="right:-70px;top:120px;width:330px;height:330px" aria-hidden="true"></span></div>
+  <div class="wrap">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Civics &amp; Elections · Closing the Loop Pod</div>
+      <h1>Effort v. Impact</h1>
+      <div class="sub">Why showing up stopped feeling worth it</div>
+      <p class="lede">Some people would engage — if they believed a given civic action was worth the effort. The barriers are too high and the incentives are too low: it takes real effort just to find out what's available and whether it matters — and when the feedback loop is broken, people stop trying because they never see the result of their effort.</p>
+      <p class="lede" style="font-weight:600;color:var(--ink)">If I go to a protest, what actually happens?</p>
+      <div class="btn-row">
+        <a class="btn" href="https://theupskillinglabs.org/cycles/2/vote" target="_blank" rel="noopener">Join the Closing the Loop Pod</a>
+        <a class="btn ghost" href="#explorer">Explore the evidence</a>
+      </div>
+    </div>
+    <div class="signal" aria-hidden="true"><span class="ring"></span><span class="ring"></span><span class="ring"></span><span class="core"></span></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>11</b><span>Signals gathered</span></div>
+    <div class="stat"><b>6</b><span>Evidence cards</span></div>
+    <div class="stat"><b>2</b><span>Patterns</span></div>
+    <div class="stat"><b>1</b><span>Theme</span></div>
+  </div>
+  <p class="tiny" style="margin-top:12px">A Frame Creation problem map (Kees Dorst's method). Raw field observations were triangulated into evidence, evidence into patterns, patterns into themes.</p>
+</div></section>
+
+<!-- ================= PROBLEM ================= -->
+<section id="problem">
+  <div class="decor"><svg class="st spin" style="right:-40px;top:-50px;width:220px;height:220px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st tw" style="left:24px;bottom:60px;width:42px;height:42px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><span class="orb" style="left:-60px;top:40%;width:280px;height:280px" aria-hidden="true"></span></div>
+  <div class="wrap">
+  <div class="eyebrow">The Paradox</div>
+  <h2>Why This Stays Stuck</h2>
+  <p class="lede">Two forces work together to keep people out — and each one makes the other worse.</p>
+
+  <div class="grid2" style="margin-top:26px">
+    <div class="card hi">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M5 8h14M5 8l-3 6a3 3 0 006 0l-3-6zM19 8l-3 6a3 3 0 006 0l-3-6zM8 21h8M12 6v15"/></svg>
+      <span class="tag">Force 1</span>
+      <h3>It's rational to opt out</h3>
+      <p>When it takes real work to find out what to do — and there's no way to tell if it worked — stepping back is the sensible choice. That's not laziness. It's people making a reasonable call with limited time and no information.</p>
+    </div>
+    <div class="card hi">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="5"/><circle cx="15" cy="10" r="5"/></svg>
+      <span class="tag">Force 2</span>
+      <h3>It only works if we all show up</h3>
+      <p>Civic engagement pays off when enough people take part — one vote or one comment rarely moves anything on its own. So everyone waits for someone else to go first, and nothing moves.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Why it sticks around:</strong> this isn't about people who don't care — it's a data problem. Most people don't know where to act, what it will take, or whether it worked, and some officials benefit from keeping it that way.</p>
+    <p><strong>What's actually going on:</strong> this mostly isn't a story about people trying to keep the public out — most civic leaders want more engagement and are stuck in the same broken loop. What they're missing isn't the will, it's the marketing budget and reach to get the word out.</p>
+  </div>
+</div></section>
+
+<!-- ================= THEMES ================= -->
+<section id="themes">
+  <div class="decor"><svg class="st drift" style="left:-30px;top:40px;width:150px;height:150px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st tw" style="right:70px;bottom:50px;width:36px;height:36px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg></div>
+  <div class="wrap">
+  <div class="eyebrow">What We Found</div>
+  <h2>The Themes Beneath It</h2>
+  <p class="lede">Everything in the evidence map below points at two missing pieces of information.</p>
+  <div class="grid2" style="margin-top:26px">
+    <div class="card">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L20 20"/></svg>
+      <span class="tag">Theme</span><h3>What's available</h3>
+      <p>People need to know what civic actions exist and what each one would actually be trying to change. At the local level, that information mostly doesn't exist — so there's nothing to weigh the effort against.</p>
+    </div>
+    <div class="card">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+      <span class="tag">Theme</span><h3>Whether it worked</h3>
+      <p>Even when someone acts, there's no feedback loop telling them whether it changed anything. Without that signal, there's no way to judge the action worth repeating — or worth trying at all.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ================= EXPLORER ================= -->
+<section id="explorer">
+  <div class="decor"><span class="rings" style="right:40px;top:70px;opacity:.35" aria-hidden="true"><i></i><i></i><i></i></span><svg class="st spin" style="left:-50px;bottom:-40px;width:200px;height:200px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg></div>
+  <div class="wrap">
+  <div class="eyebrow">The Evidence</div>
+  <h2>Our Section of the Signal Pool</h2>
+  <p class="lede">This is our slice of the wider Civics &amp; Elections pool — eleven field signals that climb into one theme about whether people can ever see their own civic action land.</p>
+
+  <div class="mapwrap">
+<svg viewBox="0 0 1400 760" xmlns="http://www.w3.org/2000/svg" class="map-svg" role="img" aria-label="Spatial map of the evidence web">
+<defs><style>.mn{font:600 12px ui-sans-serif,system-ui,sans-serif}.ms{font:500 10.5px ui-sans-serif,system-ui,sans-serif}</style></defs>
+<path d="M496,110 Q425,155 354,253" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M496,110 Q563,146 630,234" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M354,253 Q287,285 220,370" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M354,253 Q232,234 110,267" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M354,253 Q347,288 340,375" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M220,370 Q211,419 202,520" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M220,370 Q246,263 271,208" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M110,267 Q191,212 271,208" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M110,267 Q167,273 224,331" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M340,375 Q306,266 271,208" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M340,375 Q337,422 334,520" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M630,234 Q635,301 639,420" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M630,234 Q695,301 759,420" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M630,234 Q567,293 504,404" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M639,420 Q567,344 494,320" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M639,420 Q641,469 644,571" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M759,420 Q773,470 786,572" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M759,420 Q627,344 494,320" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M504,404 Q515,463 526,574" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M504,404 Q499,336 494,320" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<path d="M504,404 Q456,501 409,650" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+<g><circle cx="202" cy="520" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="202" y="539" text-anchor="middle" fill="var(--fog)">Literacy Rates</text></g>
+<g><circle cx="271" cy="208" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="271" y="227" text-anchor="middle" fill="var(--fog)">Information Asymmetry?</text></g>
+<g><circle cx="224" cy="331" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="224" y="350" text-anchor="middle" fill="var(--fog)">Economist?</text></g>
+<g><circle cx="334" cy="520" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="334" y="539" text-anchor="middle" fill="var(--fog)">Shared Truth - or Spaces f</text></g>
+<g><circle cx="494" cy="320" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="494" y="339" text-anchor="middle" fill="var(--fog)">Access to Engagement</text></g>
+<g><circle cx="644" cy="571" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="644" y="590" text-anchor="middle" fill="var(--fog)">Rational ignorance</text></g>
+<g><circle cx="786" cy="572" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="786" y="591" text-anchor="middle" fill="var(--fog)">Democratization of Public </text></g>
+<g><circle cx="526" cy="574" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="526" y="593" text-anchor="middle" fill="var(--fog)">Low Local Action</text></g>
+<g><circle cx="409" cy="650" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="409" y="669" text-anchor="middle" fill="var(--fog)">Voter Turnout?</text></g>
+<g><circle cx="448" cy="380" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="448" y="399" text-anchor="middle" fill="var(--fog)">Elected officials make ele</text></g>
+<g><circle cx="448" cy="380" r="5.5" fill="var(--paper)" stroke="var(--fog-dim)" stroke-width="1.4"/><text class="ms" x="448" y="399" text-anchor="middle" fill="var(--fog)">Public Engagement</text></g>
+<g><circle cx="496" cy="110" r="15" fill="var(--t3)" fill-opacity="0.16" stroke="var(--t3)" stroke-width="2"/><text class="mn" x="496" y="86" text-anchor="middle" fill="var(--ink)">What to say- and where to say…</text></g>
+<g><circle cx="354" cy="253" r="12" fill="var(--t2)" fill-opacity="0.16" stroke="var(--t2)" stroke-width="2"/><text class="mn" x="354" y="232" text-anchor="middle" fill="var(--ink)">What do I wan to say?</text></g>
+<g><circle cx="220" cy="370" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="220" y="352" text-anchor="middle" fill="var(--ink)">Information Lack</text></g>
+<g><circle cx="110" cy="267" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="110" y="249" text-anchor="middle" fill="var(--ink)">Information Determination</text></g>
+<g><circle cx="340" cy="375" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="340" y="357" text-anchor="middle" fill="var(--ink)">Information Overload</text></g>
+<g><circle cx="630" cy="234" r="12" fill="var(--t2)" fill-opacity="0.16" stroke="var(--t2)" stroke-width="2"/><text class="mn" x="630" y="213" text-anchor="middle" fill="var(--ink)">I have an opinon- now what</text></g>
+<g><circle cx="639" cy="420" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="639" y="402" text-anchor="middle" fill="var(--ink)">Why act?</text></g>
+<g><circle cx="759" cy="420" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="759" y="402" text-anchor="middle" fill="var(--ink)">Who is responsible for feedba…</text></g>
+<g><circle cx="504" cy="404" r="9" fill="var(--t1)" fill-opacity="0.16" stroke="var(--t1)" stroke-width="2"/><text class="mn" x="504" y="386" text-anchor="middle" fill="var(--ink)">Local better?</text></g>
+</svg>
+  </div>
+  <div class="map-cap">
+    <span><i style="border-color:var(--t3);background:rgba(193,147,47,.16)"></i> Theme</span>
+    <span><i style="border-color:var(--t2);background:rgba(91,127,166,.16)"></i> Pattern</span>
+    <span><i style="border-color:var(--t1);background:rgba(122,138,127,.16)"></i> Evidence</span>
+    <span><i style="border-color:var(--fog-dim);background:var(--paper);width:9px;height:9px"></i> Signal</span>
+    <span style="color:var(--fog-dim)">Positions are the actual layout from our working canvas.</span>
+  </div>
+
+  <h3 style="margin-top:40px;font-size:19px">Walk the trail</h3>
+  <p class="muted" style="margin-bottom:0">Every claim is built from the ground up: raw signals were triangulated into evidence, evidence grouped into patterns, and patterns lifted into the theme. Click any row to open its trail.</p>
+
+
+  <div class="exp-toolbar">
+    <div class="exp-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+      <input id="q" type="search" placeholder="Search signals, evidence, patterns, themes…" autocomplete="off">
+    </div>
+    <button class="chip on" data-f="all">All</button>
+    <button class="chip" data-f="3"><span class="dot" style="background:var(--t3)"></span>Themes</button>
+    <button class="chip" data-f="2"><span class="dot" style="background:var(--t2)"></span>Patterns</button>
+    <button class="chip" data-f="1"><span class="dot" style="background:var(--t1)"></span>Evidence</button>
+    <button class="chip" id="expandAll">Expand all</button>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--t3)"></i> Theme — the highest-level claim</span>
+    <span><i style="background:var(--t2)"></i> Pattern — repeated behaviour across cases</span>
+    <span><i style="background:var(--t1)"></i> Evidence — two or more signals triangulating</span>
+    <span><i style="background:var(--fog-dim)"></i> Signal — a single raw field observation</span>
+  </div>
+
+  <div id="ladder" class="ladder" style="margin-top:16px"></div>
+  <p class="tiny" id="count" style="margin-top:14px"></p>
+</div></section>
+
+<!-- ================= RESEARCH ================= -->
+<section id="research">
+  <div class="decor"><svg class="st spin" style="right:-30px;bottom:-30px;width:210px;height:210px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st tw" style="left:40px;top:70px;width:38px;height:38px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><span class="orb" style="right:20%;top:-70px;width:260px;height:260px" aria-hidden="true"></span></div>
+  <div class="wrap">
+  <div class="eyebrow">How We Know</div>
+  <h2>The Research Backs This Up</h2>
+  <p class="lede">This isn't just our read of the room — three separate bodies of research point the same direction.</p>
+  <div class="grid3" style="margin-top:26px">
+    <div class="col"><h4><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V10M20 21V10M12 3l9 5H3l9-5zM8 21v-7M12 21v-7M16 21v-7"/></svg>Political science</h4><ul>
+      <li><b>Communities solve shared problems on their own</b> — but only when people can see the rules, the effort involved, and whether it's working. (Elinor Ostrom, Nobel Prize–winning research on collective action)</li>
+      <li>When people believe the usual channels won't respond, they don't disappear — they redirect into protests, boycotts, and action outside the system. The impulse to act doesn't go away; it just moves.</li>
+    </ul></div>
+    <div class="col"><h4><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4V5z"/></svg>Public opinion</h4><ul>
+      <li><b>Pew:</b> trust in government sits near a 70-year low, with a sharp partisan split — this is the dominant public mood, not a fringe complaint.</li>
+      <li><b>Pew (2026):</b> the most civically active people are also among the most anxious about whether any of it matters — engagement and doubt travel together, not apart.</li>
+    </ul></div>
+    <div class="col"><h4><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.5 7-12a7 7 0 10-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>Case studies</h4><ul>
+      <li><b>vTaiwan</b> invites citizens, experts, and officials to work through a specific issue online, surfaces the ideas that get broad agreement, and commits the government to act on it — turning public consensus into real national policy, including new ride-sharing rules that ended a years-long standoff with taxi drivers.</li>
+      <li><b>Porto Alegre, Brazil</b> lets residents vote directly on city spending — and those votes become real line items in the budget, not a suggestion box nobody reads.</li>
+    </ul></div>
+  </div>
+
+  <h3 style="margin-top:44px;font-size:19px">Voices we still need</h3>
+  <p class="muted" style="margin-bottom:20px">The open questions in each area before we commit to a frame.</p>
+  <div class="grid3">
+    <div class="col"><h4>Political science</h4><ul>
+      <li class="q">Are people disengaging because they've lost trust, or because they don't have enough information to act?</li>
+      <li class="q">Does low trust drive people to disengage, or does disengaging drive the low trust — which comes first?</li>
+      <li class="q">Does this pattern hold outside the U.S., or is it shaped by how our specific system works (district lines, election rules)?</li>
+      <li class="q">If the payoff became clearer, would more people get involved — or would they just redirect their energy elsewhere?</li>
+    </ul></div>
+    <div class="col"><h4>Public opinion</h4><ul>
+      <li class="q">Do people distrust government because they can't see their impact, or because they've lost on the merits and know it?</li>
+      <li class="q">Is the "engaged but anxious" group anxious about this specific problem, or for unrelated reasons?</li>
+      <li class="q">Would showing people an honest account of their impact bring more people in, or discourage them?</li>
+      <li class="q">Does distrust hold at the local level too, where the feedback loop is naturally faster?</li>
+    </ul></div>
+    <div class="col"><h4>Case studies</h4><ul>
+      <li class="q">vTaiwan works well on contained, technical issues — would the same approach hold up on bigger, more divisive fights?</li>
+      <li class="q">Does Porto Alegre-style budgeting work anywhere, or was its success tied to one specific political moment?</li>
+      <li class="q">When communities like this succeed, does the benefit last — or fade once the initial excitement wears off?</li>
+      <li class="q">Has making impact visible ever backfired — made people more discouraged once they could see clearly they hadn't won?</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<!-- ================= ASSUMPTIONS ================= -->
+<section id="assumptions">
+  <div class="decor"><svg class="st drift" style="right:60px;top:50px;width:130px;height:130px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st tw" style="left:-10px;bottom:40px;width:52px;height:52px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg></div>
+  <div class="wrap">
+  <div class="eyebrow">Open Questions</div>
+  <h2>The Assumptions Behind This Pitch</h2>
+  <p class="lede" style="margin-bottom:26px">We built this case on real evidence — but also on a few bets we haven't proven yet.</p>
+  <div class="numcard"><span class="n">1</span><p><b>There's a real audience:</b> we're assuming there are people who'd get involved if they simply knew how — not people who've already decided they don't care.</p></div>
+  <div class="numcard"><span class="n">2</span><p><b>Engagement is worth encouraging:</b> we're assuming civic engagement is genuinely good — that more participation leads to better outcomes, not just more noise.</p></div>
+  <div class="numcard"><span class="n">3</span><p><b>Visible results won't backfire:</b> we're assuming clear feedback on impact helps people build the habit of showing up. It might instead teach people to only act when a payoff is guaranteed — and tune out everything else.</p></div>
+</div></section>
+
+<!-- ================= APPENDIX ================= -->
+<section id="appendix">
+  <div class="decor"><svg class="st spin" style="left:-40px;top:-40px;width:190px;height:190px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><span class="rings" style="right:60px;bottom:60px;opacity:.28" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="wrap">
+  <div class="eyebrow">The Full Record</div>
+  <h2>Method &amp; Appendix</h2>
+  <p class="lede" style="margin-bottom:26px">Nothing here is hidden — it's just tucked away so the main story stays readable. Open any section for the underlying detail.</p>
+
+  <details class="acc"><summary>All 11 signals — the raw field observations</summary>
+    <div class="acc-body">
+      <p>Every claim on this site traces back to one of these. Signals are unedited observations gathered from the field.</p>
+      <div class="tbl-scroll"><table class="sig-table"><thead><tr><th>Signal</th><th>What was observed</th><th>Type</th></tr></thead><tbody id="sigTable"></tbody></table></div>
+    </div>
+  </details>
+
+  <details class="acc"><summary id="unSum">Signals not yet triangulated — raw material still on the table</summary>
+    <div class="acc-body">
+      <p>These observations are in the pool but haven't yet been paired with a second source to become evidence. They're live leads, not discards — several point at threads we haven't pulled on.</p>
+      <div class="tbl-scroll"><table class="sig-table"><thead><tr><th>Signal</th><th>What was observed</th></tr></thead><tbody id="unTable"></tbody></table></div>
+    </div>
+  </details>
+
+  <details class="acc"><summary>How to read a Frame Creation map</summary>
+    <div class="acc-body">
+      <p>This is a problem situation mapped using <strong>Kees Dorst's Frame Creation method</strong> (from <em>Frame Innovation</em>, MIT Press). The evidence trail runs from raw observations up to the situation itself:</p>
+      <ol>
+        <li><strong>Signals</strong> — raw field observations, unedited.</li>
+        <li><strong>Evidence</strong> — two or more signals triangulating on one claim.</li>
+        <li><strong>Patterns</strong> — repeated behaviour visible across several pieces of evidence.</li>
+        <li><strong>Themes</strong> — what the patterns jointly reveal about the underlying condition.</li>
+        <li><strong>Problem situation</strong> — the open, complex, networked condition a new frame comes from.</li>
+      </ol>
+      <p>The job at this stage is to <em>investigate the field, not to solve anything</em>. Solutions come later, and only after the field is mapped and the archaeology is deep.</p>
+      <h4>Why this problem is "open," not "bounded"</h4>
+      <p>A bounded problem has a known solution path. This one doesn't — it's complex (several competing explanations), networked (no actor moves alone), and dynamic (measuring responsiveness changes the behaviour of everyone being measured). Every promising case study we found relocated the tension rather than eliminating it.</p>
+    </div>
+  </details>
+
+  <details class="acc"><summary>What comes next in the method</summary>
+    <div class="acc-body">
+      <p>This situation is mapped but not solved — and solving it is not the next step. The next steps in Frame Creation are:</p>
+      <ol>
+        <li><strong>Map the field</strong> — identify every player connected to this situation or a future resolution. Define each by their practices and currency, not their title. Look especially for players who share the values our themes surfaced — even in distant, unexpected domains.</li>
+        <li><strong>Identify a client</strong> — from the potential problem owners, who could own this situation or adopt a resolution? What would they need to see?</li>
+        <li><strong>Choose a delivery context</strong> — through what kind of vehicle does a resolution reach the field? (An internal team, a government program, an open-source project, a startup, a nonprofit, a civic institution, a co-op — there is no right answer, only trade-offs.)</li>
+        <li><strong>Deepen the archaeology</strong> — the gaps above name what's still thin. Go find it: interview people, run deep-research sweeps, pull secondary sources.</li>
+        <li><strong>Create frames</strong> — only after the field is mapped and the archaeology is deep. "If this situation is approached as if it is ___, then ___."</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="acc"><summary>Honest limits of this map</summary>
+    <div class="acc-body">
+      <p>Where the evidence is thin, and we know it:</p>
+      <ul>
+        <li><strong>Card coverage is uneven.</strong> Two themes are fully built out; several patterns and evidence cards sit unattached, waiting for more signals before they climb the ladder.</li>
+        <li><strong>Some cards are still untitled.</strong> They hold real signals but haven't yet had their claim named — they're shown here rather than deleted.</li>
+        <li><strong>Most signals are U.S.-based.</strong> We can't yet say whether this pattern is inherent to mass democracy or an artifact of specific U.S. institutional design.</li>
+        <li><strong>Single sources dressed as triangulation.</strong> A few evidence cards lean on two signals from a similar vantage point. Read those critically.</li>
+        <li><strong>No decision-maker voice yet.</strong> We've heard from residents and observers, but not enough from the legislative staff and local officials who sit on the other side of the loop.</li>
+      </ul>
+    </div>
+  </details>
+</div></section>
+
+<!-- ================= NEXT / JOIN ================= -->
+<section id="next" class="footer">
+  <div class="decor"><svg class="st tw" style="left:5%;top:80px;width:54px;height:54px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><svg class="st drift" style="left:14%;bottom:90px;width:32px;height:32px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg><span class="rings" style="right:8%;bottom:80px;opacity:.4" aria-hidden="true"><i></i><i></i><i></i></span><span class="orb" style="left:-70px;bottom:-70px;width:300px;height:300px" aria-hidden="true"></span></div>
+  <div class="wrap">
+  <svg class="star spin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.4 7.1.6-5.4 4.6 1.7 6.9L12 16.9 5.7 20.5l1.7-6.9L2 9l7.1-.6L12 2z"/></svg>
+  <div class="eyebrow">Join Us</div>
+  <h2>Build with the Civics &amp; Elections: "Closing the Loop" Pod</h2>
+  <p class="sub-tag">So people can see their civic action land.</p>
+  <p class="lede" style="max-width:64ch">We're forming a pod to close this loop through thoughtful, creative problem-solving. If this pulls at you, help us build the tools that empower our community to act and be heard.</p>
+  <div class="btn-row">
+    <a class="btn" href="https://theupskillinglabs.org/cycles/2/vote" target="_blank" rel="noopener">Join the Closing the Loop Pod</a>
+    <a class="btn ghost" href="./slides.html" style="color:#e8ecf3;border-color:rgba(255,255,255,.25)">View the pitch deck</a>
+  </div>
+
+  <p class="tiny" style="margin-top:38px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:#c3ccdb">Where we are in the Upskilling Labs cycle</p>
+  <div class="timeline"><div class="timeline-inner">
+    <div class="timeline-headers">
+      <div class="grp"><div class="lbl">Month 1</div><div class="ttl" style="color:#fff">Problem Discovery &amp; Definition</div></div>
+      <div class="grp"><div class="lbl">Month 2</div><div class="ttl" style="color:#fff">Exploration &amp; Experimentation</div></div>
+      <div class="grp"><div class="lbl">Month 3</div><div class="ttl" style="color:#fff">Prototype Building &amp; Iterating</div></div>
+    </div>
+    <div class="timeline-track" id="tlTrack"></div>
+  </div></div>
+
+  <div class="footer-bottom">
+    <span>Civics &amp; Elections: Signal Pool · The Upskilling Labs</span>
+    <span>Mapped with Frame Creation (Kees Dorst) · 11 signals · 9 cards</span>
+  </div>
+</div></section>
+
+<script>
+const DATA = {"cards":[{"id":"card_b4312e3a-2fde-4dac-81e4-fc9fa7932a77","title":"What to say- and where to say it","desc":"Underneath both patterns is the same unmet human need: people need to see a causal line between their own action and a consequence in the world in order to believe the action is worth taking — and at the local political scale, no infrastructure exists, on either end, to make that causal line visible. The front-end patterns fails to supply \"what would matter,\" the back-end pattern fails to supply \"did it matter\" — leaving the basic human requirement for legible efficacy structurally unmet, not because people lack the will to act, but because the system provides no evidence either direction.","tier":3,"tierName":"Theme","children":["card_1c59414d-78a1-414a-84b7-ab7a82ec24df","card_60204a7b-1edc-439b-beaa-3d22809684b9"],"orphan":true},{"id":"card_1c59414d-78a1-414a-84b7-ab7a82ec24df","title":"What do I wan to say?","desc":"People are exposed to information but lack a reliable way to convert it into a defensible opinion — the friction isn't that information is missing, it's that turning available information into a judgment requires either a skill (literacy) or a trustworthy shortcut (deference to experts), and both are unreliable under real conditions.","tier":2,"tierName":"Pattern","children":["card_422c1dde-db65-45f3-9710-6ca98486f108","card_7d6cc603-872b-464e-a773-443b90efc36c","card_8d7d640b-5341-42de-9505-190597201567"],"orphan":false},{"id":"card_422c1dde-db65-45f3-9710-6ca98486f108","title":"Information Lack","desc":"The public lacks the civic literacy — not the access — to convert available political information into actions that move policy; information sits in reach but inert, because using it requires interpretive and procedural skills most citizens don't have and no one is responsible for building.","tier":1,"tierName":"Evidence","children":["item_554a0a46-e953-4ca0-8aec-b575370cd266","item_e25fc102-a3a2-4d69-a997-8e6c61b47701"],"orphan":false},{"id":"card_7d6cc603-872b-464e-a773-443b90efc36c","title":"Information Determination","desc":"The public relies on a functioning shortcut — deferring to experts/authorities — to judge policy claims that exceed most people's direct domain literacy. That shortcut fails at the population level whenever authorities visibly disagree or compete for confidence, and it's currently unclear whether the failure is because most people lack the literacy to adjudicate independently, or because the contexts in which claims reach them (soundbites, debates, compressed news cycles) strip out what even literate people would need to adjudicate — or because disagreement gets resolved by identity/motivated reasoning rather than either literacy or context.","tier":1,"tierName":"Evidence","children":["item_e25fc102-a3a2-4d69-a997-8e6c61b47701","item_4e7e5886-0c42-4075-b4a4-57da5f1a92e7"],"orphan":false},{"id":"card_8d7d640b-5341-42de-9505-190597201567","title":"Information Overload","desc":"There is no shared civic infrastructure — no common source, venue, or channel — where local political information circulates. Both signals point to an absence of a shared informational commons at the local level: national/federal information crowds out local, and there's no common space where local facts would even live if someone looked for them.","tier":1,"tierName":"Evidence","children":["item_e25fc102-a3a2-4d69-a997-8e6c61b47701","item_1ea04675-30ba-448a-9422-839423529a6c"],"orphan":false},{"id":"card_60204a7b-1edc-439b-beaa-3d22809684b9","title":"I have an opinon- now what","desc":"Across all three, there is no verifiable record connecting local civic input to local outcomes — neither citizens deciding whether to act, nor anyone checking whether officials responded, has access to evidence that effort at the local level actually produces effect. The recurring condition isn't \"no information\" broadly — it's specifically the absence of an outcome-verification link.","tier":2,"tierName":"Pattern","children":["card_b90dac66-3b6f-4a24-a722-9dbe2e9de291","card_a11d54a1-9aa2-487f-acfc-796209ba5845","card_0a4f4567-1631-4669-80f3-9ffa51315585"],"orphan":false},{"id":"card_b90dac66-3b6f-4a24-a722-9dbe2e9de291","title":"Why act?","desc":"Citizens carry a rational-ignorance heuristic calibrated to federal-scale politics (\"my input won't change anything\") and apply it by default to local politics — where the actual effort-to-impact ratio is far more favorable — and nothing corrects this misapplication because no local information exists to show them their local leverage is different.","tier":1,"tierName":"Evidence","children":["item_d835e944-7728-410d-9402-a8d4b83569b4","item_fbcf1825-b15d-4fdb-9332-4511f94bbd31"],"orphan":false},{"id":"card_a11d54a1-9aa2-487f-acfc-796209ba5845","title":"Who is responsible for feedback loops?","desc":"Policymakers can act (or fail to act) on constituent opinion without any public record existing to verify whether they did — the accountability mechanism itself is invisible, because the data that would let anyone check \"did they listen\" is not made public.","tier":1,"tierName":"Evidence","children":["item_63c93550-6194-4e50-bb90-75102d7cdaee","item_d835e944-7728-410d-9402-a8d4b83569b4"],"orphan":false},{"id":"card_0a4f4567-1631-4669-80f3-9ffa51315585","title":"Local better?","desc":"Before any civic action happens, a person has to judge whether it's \"worth it\" — and something is currently blocking that judgment from being made, whether the blockage is a resource constraint (time), an information gap (what the action would actually accomplish locally), or both together. The mechanism is a stalled cost-benefit judgment, not yet a confirmed cause.","tier":1,"tierName":"Evidence","children":["item_e79737f2-01f1-4080-8772-41c108f10b11","item_d835e944-7728-410d-9402-a8d4b83569b4","item_a83d2ece-caf9-4c8a-aa6a-b29c40a24f2e"],"orphan":false}],"signals":[{"id":"item_554a0a46-e953-4ca0-8aec-b575370cd266","tag":"Source Extract","title":"Literacy Rates","summary":"Baseline reading/civic literacy needed to navigate ballots and information","url":"","verified":true},{"id":"item_e25fc102-a3a2-4d69-a997-8e6c61b47701","tag":"Source Extract","title":"Information Asymmetry?","summary":"Hard to find out about local elections; too much national/federal","url":"","verified":true},{"id":"item_4e7e5886-0c42-4075-b4a4-57da5f1a92e7","tag":"Source Extract","title":"Economist?","summary":"Generally officals and SMEs certainty even when problems/solutions are uncertain","url":"","verified":true},{"id":"item_1ea04675-30ba-448a-9422-839423529a6c","tag":"Source Extract","title":"Shared Truth - or Spaces for Information","summary":"Lack of common spaces or sources for shared factual information","url":"","verified":true},{"id":"item_d835e944-7728-410d-9402-a8d4b83569b4","tag":"Source Extract","title":"Access to Engagement","summary":"Across demos","url":"","verified":true},{"id":"item_fbcf1825-b15d-4fdb-9332-4511f94bbd31","tag":"Source Extract","title":"Rational ignorance","summary":"Individually rational to stay uninformed since one vote is rarely decisive, voting is a collective action problem","url":"","verified":true},{"id":"item_63c93550-6194-4e50-bb90-75102d7cdaee","tag":"Source Extract","title":"Democratization of Public Opinion Data","summary":"Public opinion is essentials to hold policy makers accountable to constituents but the data is not public","url":"","verified":true},{"id":"item_e79737f2-01f1-4080-8772-41c108f10b11","tag":"Source Extract","title":"Low Local Action","summary":"People don't have the time or information to determine what civic actions are 'worth it'.","url":"","verified":false},{"id":"item_a83d2ece-caf9-4c8a-aa6a-b29c40a24f2e","tag":"Source Extract","title":"Voter Turnout?","summary":"Declining or uneven participation rates across electorate demographics","url":"","verified":true},{"id":"x_item_2b3e0933-17fb-4d45-a91e-70169007ac9c","tag":"Source Extract","title":"Elected officials make election policy","summary":"Convergence of Elected Officials and election policy","url":"","verified":true},{"id":"x_item_de163d7c-1a22-458f-aab2-f2c72997352b","tag":"Source Extract","title":"Public Engagement","summary":"Public engagement is uneven or nonexistent particularly at the local level","url":"","verified":true}],"counts":{"signals":11,"cards":9,"themes":1,"patterns":2,"evidence":6}};
+
+/* ---------- build lookups ---------- */
+const byId = {};
+DATA.cards.forEach(c => byId[c.id] = c);
+const sigById = {};
+DATA.signals.forEach(s => sigById[s.id] = s);
+
+const TIER_NAME = {3:'Theme', 2:'Pattern', 1:'Evidence'};
+
+/* collect every signal underneath a card (recursive) */
+function collectSignals(card, seen){
+  seen = seen || new Set();
+  const out = [];
+  (card.children||[]).forEach(id => {
+    if (sigById[id]) { if(!seen.has(id)){ seen.add(id); out.push(sigById[id]); } }
+    else if (byId[id]) { collectSignals(byId[id], seen).forEach(s => out.push(s)); }
+  });
+  return out;
+}
+
+/* searchable text blob for a card and everything under it */
+function blob(card){
+  let t = (card.title+' '+card.desc).toLowerCase();
+  (card.children||[]).forEach(id => {
+    if (sigById[id]) t += ' ' + (sigById[id].title+' '+sigById[id].summary).toLowerCase();
+    else if (byId[id]) t += ' ' + blob(byId[id]);
+  });
+  return t;
+}
+
+/* ---------- render ---------- */
+function esc(s){ return (s||'').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+function sigHTML(s){
+  return '<div class="sig"><span class="sdot"></span><div>'+
+    '<div class="sname">'+esc(s.title||'Untitled signal')+
+      (s.tag ? '<span class="stag">'+esc(s.tag)+'</span>' : '')+'</div>'+
+    (s.summary ? '<div class="ssum">'+esc(s.summary)+'</div>' : '')+
+  '</div></div>';
+}
+
+function nodeHTML(card, depth){
+  const kids = (card.children||[]);
+  const childCards = kids.filter(id => byId[id]).map(id => byId[id]);
+  const childSigs  = kids.filter(id => sigById[id]).map(id => sigById[id]);
+  const total = collectSignals(card).length;
+  const title = card.title ? esc(card.title) : 'Untitled card';
+  const cls = card.title ? 'node-title' : 'node-title untitled';
+
+  let body = '';
+  if (childCards.length) body += '<div class="ladder">'+childCards.map(c => nodeHTML(c, depth+1)).join('')+'</div>';
+  if (childSigs.length)  body += '<div style="margin-top:'+(childCards.length?'10px':'0')+'">'+childSigs.map(sigHTML).join('')+'</div>';
+  if (!body) body = '<p class="muted" style="margin:0">No children attached yet — this card is waiting on more signals.</p>';
+
+  return '<div class="node t'+card.tier+'" data-tier="'+card.tier+'" data-id="'+card.id+'">'+
+    '<button class="node-head">'+
+      '<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>'+
+      '<span class="txt">'+
+        '<span class="node-tier">'+TIER_NAME[card.tier]+'</span>'+
+        '<div class="'+cls+'">'+title+'</div>'+
+        (card.desc ? '<div class="node-desc">'+esc(card.desc)+'</div>' : '')+
+      '</span>'+
+      '<span class="node-meta">'+total+' signal'+(total===1?'':'s')+'</span>'+
+    '</button>'+
+    '<div class="node-body">'+body+'</div>'+
+  '</div>';
+}
+
+let filter = 'all', query = '';
+
+function render(){
+  const host = document.getElementById('ladder');
+  let roots = DATA.cards.filter(c => c.orphan);
+
+  if (filter !== 'all'){
+    const t = +filter;
+    roots = DATA.cards.filter(c => c.tier === t);
+  }
+  if (query){
+    roots = roots.filter(c => blob(c).includes(query));
+  }
+  roots.sort((a,b) => (b.tier - a.tier) || (a.title||'zzz').localeCompare(b.title||'zzz'));
+
+  host.innerHTML = roots.length
+    ? roots.map(c => nodeHTML(c,0)).join('')
+    : '<div class="empty">No cards match that search.</div>';
+
+  const shown = roots.length;
+  const sigs  = new Set(); roots.forEach(c => collectSignals(c).forEach(s => sigs.add(s.id)));
+  document.getElementById('count').textContent =
+    'Showing '+shown+' card'+(shown===1?'':'s')+' · '+sigs.size+' signal'+(sigs.size===1?'':'s')+
+    (query ? ' matching "'+query+'"' : '') + '.';
+
+  // auto-open when searching
+  if (query) host.querySelectorAll('.node').forEach(n => n.classList.add('open'));
+  else host.querySelectorAll('.node.t3').forEach(n => n.classList.add('open'));
+}
+
+document.getElementById('ladder').addEventListener('click', e => {
+  const h = e.target.closest('.node-head');
+  if (!h) return;
+  h.parentElement.classList.toggle('open');
+});
+
+document.querySelectorAll('.chip[data-f]').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.chip[data-f]').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); filter = b.dataset.f; render();
+  };
+});
+
+document.getElementById('q').addEventListener('input', e => {
+  query = e.target.value.trim().toLowerCase(); render();
+});
+
+document.getElementById('expandAll').onclick = function(){
+  const nodes = document.querySelectorAll('#ladder .node');
+  const anyClosed = [...nodes].some(n => !n.classList.contains('open'));
+  nodes.forEach(n => n.classList.toggle('open', anyClosed));
+  this.textContent = anyClosed ? 'Collapse all' : 'Expand all';
+};
+
+/* signal tables */
+document.getElementById('sigTable').innerHTML = DATA.signals
+  .slice().sort((a,b) => (a.title||'').localeCompare(b.title||''))
+  .map(s => '<tr><td class="n">'+esc(s.title||'Untitled')+'</td><td>'+esc(s.summary||'—')+'</td><td>'+esc(s.tag||'—')+'</td></tr>')
+  .join('');
+
+/* unattached signals */
+const attached = new Set();
+DATA.cards.forEach(c => (c.children||[]).forEach(id => { if (sigById[id]) attached.add(id); }));
+const loose = DATA.signals.filter(s => !attached.has(s.id))
+  .sort((a,b) => (a.title||'').localeCompare(b.title||''));
+document.getElementById('unTable').innerHTML = loose
+  .map(s => '<tr><td class="n">'+esc(s.title||'Untitled')+'</td><td>'+esc(s.summary||'—')+'</td></tr>').join('');
+document.getElementById('unSum').firstChild.textContent =
+  loose.length+' signals not yet triangulated — raw material still on the table';
+
+/* timeline */
+const WEEKS = [
+  ['Week 0','Kickoff + Summit'],['Week 1','Problem Proposals'],['Week 2','Problem Voting'],
+  ['Week 3','Pod Creation'],['Week 4','Meet The Pods'],['Week 5','Experiments'],
+  ['Week 6','Project Pitches'],['Week 7','Project Voting'],['Week 8','Meet The Projects'],
+  ['Week 9','Mentor Intensive'],['Week 10','Mentor Intensive'],['Week 11','Rehearsal'],
+  ['Week 12','Showcase + Summit']
+];
+document.getElementById('tlTrack').innerHTML = WEEKS.map((w,i) => {
+  const active = i === 1;
+  const label = '<span class="label '+(i%2===0?'above':'below')+'"><span class="wk">'+w[0]+'</span><span class="name">'+w[1]+'</span></span>';
+  const circle = '<span class="circle">'+i+'</span>';
+  return '<div class="tl-node'+(active?' active':'')+'">'+(i%2===0 ? label+circle : circle+label)+'</div>';
+}).join('');
+
+render();
+</script>
+</body></html>
