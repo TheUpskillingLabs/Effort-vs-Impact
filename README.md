@@ -1,20 +1,35 @@
-# Civics & Elections: Signal Pool
+# Effort vs. Impact — Closing the Loop Pod
 
-A static, read-only presentation of a Frame Creation web map, exported from The
-Labs Sensemaking Engine. It is self-contained and ready to host on GitHub Pages.
+Course materials and assignments for the Closing the Loop pod, organized by sprint.
+This repo is meant to be collaborative — pod members add their own assignment work
+in the relevant sprint folder as each sprint goes.
 
-## Layout
-- `index.html` — the presentation shell (hydrates from the files below)
-- `assets/` — `style.css` and `viewer.js` (renders the report + spatial map)
-- `data/` — `project.jsonld` (semantic graph + coordinates), `extracts.csv`
-  (validated extracted signals), and `site-data.js` (a fallback so the page also
-  renders when opened directly via `file://`)
-- `content/` — `situation.md` and `themes.md` (the human-readable narrative)
+## Sprints
 
-## Publish on GitHub Pages
-1. Commit this folder to a repository (root or a `/docs` folder, or a `gh-pages` branch).
-2. In the repo: **Settings → Pages**, pick the branch (and `/docs` if you used it).
-3. Visit `https://<user>.github.io/<repo>/` — the report and web map render there.
+| Sprint | Dates | Focus | Where |
+| --- | --- | --- | --- |
+| 1 | 7/13–8/2 | Pod Formation | [`index.html`](./index.html) / [`slides.html`](./slides.html) (repo root) |
+| 2 | 8/2–8/15 | Problem and Frame Discovery | [`sprint-2-problem-and-frame-discovery/`](./sprint-2-problem-and-frame-discovery) |
+| 3 | 8/16–8/31 | Project Formation | [`sprint-3-project-formation/`](./sprint-3-project-formation) |
 
-Opening `index.html` by double-click works too (via `data/site-data.js`), but for
-full fidelity serve it over HTTP — locally that's `python3 -m http.server`.
+Sprint 2 has three assignment subfolders:
+- [`individual-fieldwork/`](./sprint-2-problem-and-frame-discovery/individual-fieldwork)
+- [`group-paradox-synthesis/`](./sprint-2-problem-and-frame-discovery/group-paradox-synthesis)
+- [`individual-frame-hypotheses/`](./sprint-2-problem-and-frame-discovery/individual-frame-hypotheses)
+
+Sprint 3's assignment subfolders aren't defined yet; add them under
+`sprint-3-project-formation/` following the same pattern as Sprint 2 once they're known.
+
+## GitHub Pages
+
+`index.html` and `slides.html` stay at the repo root — **Settings → Pages** serves the
+site from there, so `https://<user>.github.io/<repo>/` keeps working as the Sprint 1
+Pod Formation page. Don't move or rename those two files.
+
+## Adding an assignment
+
+1. Find (or create) the folder for the right sprint and assignment.
+2. Add your files there — a short `README.md` describing what it is helps others
+   navigate. Individual contributors can use a subfolder with their name if an
+   assignment isn't already split out.
+3. Open a pull request against `main`.
