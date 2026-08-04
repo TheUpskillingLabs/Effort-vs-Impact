@@ -1,6 +1,6 @@
 # Effort vs. Impact — Closing the Loop Pod
 
-Course materials and assignments for the Closing the Loop pod, organized by sprint.
+Build cycle artifacts and assignments for the Closing the Loop pod, organized by sprint.
 This repo is meant to be collaborative — pod members add their own assignment work
 in the relevant sprint folder as each sprint goes.
 
@@ -29,7 +29,6 @@ Pod Formation page. Don't move or rename those two files.
 ## Adding an assignment
 
 1. Find (or create) the folder for the right sprint and assignment.
-2. Add your files there — a short `README.md` describing what it is helps others
-   navigate. Individual contributors can use a subfolder with their name if an
-   assignment isn't already split out.
+2. Add your work in a folder named `<first initial><last name>-<assignment name>`
+   (lowercase, hyphenated) — e.g. `jsmith-individual-fieldwork`.
 3. Open a pull request against `main`.
