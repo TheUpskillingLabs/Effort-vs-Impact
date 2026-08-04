@@ -12,10 +12,11 @@ in the relevant sprint folder as each sprint goes.
 | 2 | 8/2–8/15 | Problem and Frame Discovery | [`sprint-2-problem-and-frame-discovery/`](./sprint-2-problem-and-frame-discovery) |
 | 3 | 8/16–8/31 | Project Formation | [`sprint-3-project-formation/`](./sprint-3-project-formation) |
 
-Sprint 2 has three assignment subfolders:
+Sprint 2 has four assignment subfolders:
 - [`individual-fieldwork/`](./sprint-2-problem-and-frame-discovery/individual-fieldwork)
 - [`group-paradox-synthesis/`](./sprint-2-problem-and-frame-discovery/group-paradox-synthesis)
 - [`individual-frame-hypotheses/`](./sprint-2-problem-and-frame-discovery/individual-frame-hypotheses)
+- [`individual-presentation/`](./sprint-2-problem-and-frame-discovery/individual-presentation)
 
 Sprint 3's assignment subfolders aren't defined yet; add them under
 `sprint-3-project-formation/` following the same pattern as Sprint 2 once they're known.
