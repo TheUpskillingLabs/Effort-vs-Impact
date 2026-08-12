@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Effort v. Impact</title>
+  <style>
+    :root {
+      --paper: #f3f0e8;
+      --ink: #191816;
+      --muted: #6f685f;
+      --line: #c9c1b5;
+      --rust: #a33d2f;
+      --rust-soft: #e9d8d1;
+      --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --body: "Avenir Next", Avenir, "Gill Sans", "Trebuchet MS", sans-serif;
+      --slide-scale: 1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #d6d0c7;
+      color: var(--ink);
+      font-family: var(--body);
+      text-rendering: optimizeLegibility;
+    }
+
+    .slide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1600px;
+      height: 900px;
+      padding: 52px 68px 34px;
+      overflow: hidden;
+      transform: translate(-50%, -50%) scale(var(--slide-scale));
+      transform-origin: center;
+      background: var(--paper);
+      display: grid;
+      grid-template-rows: 154px minmax(0, 1fr) 110px;
+      gap: 16px;
+    }
+
+    .masthead {
+      padding-bottom: 8px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(470px, 0.8fr);
+      gap: 48px;
+      align-items: center;
+    }
+
+    .headline-block {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 66px;
+      font-weight: 500;
+      letter-spacing: -0.035em;
+      line-height: 1;
+    }
+
+    .claim {
+      max-width: 820px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .header-visual {
+      height: 146px;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .header-visual img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.88;
+      mix-blend-mode: multiply;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+
+    .content-grid {
+      height: 446px;
+      min-height: 0;
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1.3fr 0.82fr 1fr;
+      gap: 34px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding-top: 5px;
+    }
+
+    .panel + .panel {
+      padding-left: 30px;
+      border-left: 1px solid var(--line);
+    }
+
+    .section-head {
+      margin-bottom: 0;
+      padding-bottom: 11px;
+      border-bottom: 2px solid var(--ink);
+      display: flex;
+      align-items: baseline;
+    }
+
+    h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 27px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1;
+    }
+
+    .friction-lead {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .field-example {
+      margin: 7px 0 9px;
+      padding: 3px 0 4px 15px;
+      border-left: 3px solid var(--rust);
+      font-family: var(--display);
+      font-size: 17px;
+      line-height: 1.24;
+    }
+
+    .field-example strong {
+      color: var(--rust);
+      font-weight: 600;
+    }
+
+    .supporting-accounts {
+      margin: 0 0 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .supporting-account {
+      min-width: 0;
+      padding: 9px 11px 10px 12px;
+      border-left: 3px solid var(--ink);
+      background: rgba(163, 61, 47, 0.055);
+    }
+
+    .supporting-account p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 11.6px;
+      line-height: 1.28;
+    }
+
+    .supporting-account q {
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      padding-top: 8px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--rust);
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1;
+    }
+
+    .stat strong sup {
+      margin-left: 1px;
+      font-size: 0.44em;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11.4px;
+      line-height: 1.25;
+    }
+
+    sup {
+      color: var(--rust);
+      font-family: var(--body);
+      font-size: 0.62em;
+      font-weight: 800;
+      vertical-align: super;
+    }
+
+    .attempt-list,
+    .hypothesis-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .attempt-list li {
+      position: relative;
+      min-height: 54px;
+      padding: 10px 0 10px 28px;
+      border-top: 1px solid var(--line);
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.18;
+    }
+
+    .attempt-list li:first-child {
+      border-top: 0;
+    }
+
+    .attempt-list li::before {
+      position: absolute;
+      left: 0;
+      color: var(--rust);
+      content: attr(data-index);
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .hypothesis-list li {
+      padding: 10px 0 11px;
+      border-top: 1px solid var(--line);
+    }
+
+    .hypothesis-list li:first-child {
+      border-top: 0;
+    }
+
+    .hypothesis-list p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 15.5px;
+      line-height: 1.34;
+    }
+
+    .hypothesis-list strong {
+      color: var(--rust);
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .sources {
+      padding-top: 10px;
+      border-top: 1px solid var(--ink);
+      display: grid;
+      align-items: start;
+    }
+
+    .source-list {
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1.25fr 1.05fr 1fr;
+      gap: 28px;
+      list-style: none;
+      counter-reset: sources;
+    }
+
+    .source-list li {
+      position: relative;
+      padding-left: 20px;
+      color: var(--muted);
+      counter-increment: sources;
+      font-size: 10.8px;
+      line-height: 1.22;
+    }
+
+    .source-list .source-row {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .source-list .source-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .source-list .reddit-bundle {
+      font-size: 9.7px;
+      line-height: 1.16;
+    }
+
+    .source-list .source-note {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .source-list li::before {
+      position: absolute;
+      left: 0;
+      color: var(--rust);
+      content: counter(sources) ".";
+      font-weight: 800;
+    }
+
+    .source-list a {
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration-color: transparent;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .source-list a:hover,
+    .source-list a:focus-visible {
+      text-decoration-color: var(--rust);
+    }
+
+    .source-list a:focus-visible {
+      outline: 2px solid var(--rust);
+      outline-offset: 3px;
+    }
+
+    @media print {
+      @page {
+        size: 1600px 900px;
+        margin: 0;
+      }
+
+      body {
+        background: transparent;
+      }
+
+      .slide {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="slide" aria-labelledby="slide-title">
+    <header class="masthead">
+      <div class="headline-block">
+          <h1 id="slide-title">Effort v. Impact</h1>
+        <p class="claim">What happens when civic participation is risky, costly and scary?</p>
+      </div>
+      <figure class="header-visual">
+        <img src="assets/civic-participation-personal-stakes.png" alt="Editorial illustration of a civic participant approaching a public institution while work, housing, financial, and digital pressures pull against them">
+      </figure>
+    </header>
+
+    <div class="content-grid">
+      <section class="panel" aria-labelledby="observed-friction">
+        <div class="section-head">
+          <h2 id="observed-friction">Friction</h2>
+        </div>
+        <p class="friction-lead">Participation in civics can lead to serious personal harms.</p>
+        <p class="field-example"><strong>“I was arrested on Saturday for peaceful protest.”</strong> A Minneapolis Reddit poster said police threw them down, sprayed them, held them for two days without necessary medication, and charged them with felony rioting.<sup>1</sup></p>
+        <div class="supporting-accounts" aria-label="Two additional self-reported consequences of civic participation">
+          <article class="supporting-account">
+            <p>After reporting alleged public fraud, the poster said their employer fired them and their university retroactively changed passing grades before expelling them.<sup>1</sup></p>
+          </article>
+          <article class="supporting-account">
+            <p>After reporting suspected child abuse to CPS and requesting union representation, the poster said the principal cut off future substitute work at the school.<sup>1</sup></p>
+          </article>
+        </div>
+        <div class="stats" aria-label="Evidence about feared consequences">
+          <div class="stat">
+            <strong>44%<sup>2</sup></strong>
+            <span>of U.S. adults are concerned about consequences for publicly disagreeing with their own side</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="attempts">
+        <div class="section-head">
+          <h2 id="attempts">What has been tried</h2>
+        </div>
+        <ul class="attempt-list">
+          <li data-index="01">First Amendment rights against government retaliation</li>
+          <li data-index="02">Whistleblower, anti-retaliation laws, and confidential and anonymous reporting channels</li>
+          <li data-index="03">Legal aid from civil-liberties groups</li>
+        </ul>
+      </section>
+
+      <section class="panel" aria-labelledby="hypothesis">
+        <div class="section-head">
+          <h2 id="hypothesis">Why has this problem not been solved</h2>
+        </div>
+        <ul class="hypothesis-list">
+          <li>
+            Solutions get circumvented, i.e. police illegally arrest peaceful protesters.
+          </li>
+          <li>The constitution was supposed to protect us from this high risks of civic participation, its strength has been eroding over time.</li>
+          <li>
+            <p> Employers didn't used to know or care about your political oppinions, and what technology i.e. social media and cancel culture that has changed.</p>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <footer class="sources" aria-label="References">
+      <ol class="source-list">
+        <li class="reddit-bundle">
+          <span class="source-row"><a href="https://www.reddit.com/r/2020PoliceBrutality/comments/guv8dz" target="_blank" rel="noreferrer">r/2020PoliceBrutality</a>, <em>My Police Brutality Story</em> (2020; self-report).</span>
+          <span class="source-row"><a href="https://www.reddit.com/r/Whistleblowers/comments/1j43mnq" target="_blank" rel="noreferrer">r/Whistleblowers</a>, <em>Employer and Graduate-School Retaliation</em> (2025; self-report).</span>
+          <span class="source-row"><a href="https://www.reddit.com/r/Teachers/comments/1d9sajo" target="_blank" rel="noreferrer">r/Teachers</a>, <em>Retaliated against for calling CPS</em> (2024; self-report).</span>
+        </li>
+        <li><a href="https://news.gallup.com/poll/711713/americans-say-courage-declining-nationwide.aspx" target="_blank" rel="noreferrer">Gallup &amp; With Honor</a>, <em>Americans Say Courage Is Declining Nationwide</em> (2026), n&gt;3,000.</li>
+      </ol>
+    </footer>
+  </main>
+
+  <script>
+    function fitSlide() {
+      const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+      document.documentElement.style.setProperty("--slide-scale", String(scale));
+    }
+
+    window.addEventListener("resize", fitSlide);
+    fitSlide();
+  </script>
+</body>
+</html>
