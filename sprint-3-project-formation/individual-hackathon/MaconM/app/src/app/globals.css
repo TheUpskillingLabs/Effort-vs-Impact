@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  /* Calm, credible civic-service palette. Deliberately light-only and
+     high-contrast rather than theme-switching, to keep status colors
+     (proceed / do-not-proceed / not-yet) unambiguous. */
+  --background: #f4f6f8;
+  --surface: #ffffff;
+  --surface-muted: #eef1f4;
+  --border: #dde3e9;
+  --foreground: #16212c;
+  --muted: #55636f;
+
+  --primary: #1c4d73;
+  --primary-hover: #163c5a;
+  --primary-foreground: #ffffff;
+
+  --accent: #b3691f;
+
+  --status-proceed: #1c7a4d;
+  --status-proceed-bg: #e7f5ee;
+  --status-do-not-proceed: #b3261e;
+  --status-do-not-proceed-bg: #fbeae9;
+  --status-not-yet: #92620a;
+  --status-not-yet-bg: #fbf1de;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+
+  --color-status-proceed: var(--status-proceed);
+  --color-status-proceed-bg: var(--status-proceed-bg);
+  --color-status-do-not-proceed: var(--status-do-not-proceed);
+  --color-status-do-not-proceed-bg: var(--status-do-not-proceed-bg);
+  --color-status-not-yet: var(--status-not-yet);
+  --color-status-not-yet-bg: var(--status-not-yet-bg);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
