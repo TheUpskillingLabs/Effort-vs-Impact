@@ -1,0 +1,97 @@
+// HearBack data model
+// See README.md for a plain-language walkthrough of these models and the
+// resident / board-admin roles that read and write them.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// The single pilot agenda item. HearBack is intentionally scoped to one
+// item at a time (see README) rather than a general multi-item CMS, so
+// the app always reads the first AgendaItem row.
+model AgendaItem {
+  id      String @id @default(cuid())
+  title   String
+  // Plain-language context: why this item exists, in resident-friendly language.
+  context String
+
+  // The single question the board is actually deciding.
+  decisionQuestion String
+
+  commentOpenAt  DateTime
+  responseByDate DateTime
+
+  // Named before comment opens, per the "who owns the reply" principle:
+  // accountability should be visible to residents, not just tracked internally.
+  responseOwnerName String
+  responseOwnerRole String
+
+  // Timeline stage 2: set once the admin publishes "What we heard".
+  synthesisPublishedAt DateTime?
+
+  // Timeline stage 4: set once the admin publishes the official response.
+  responsePublishedAt DateTime?
+  responseStatus       ResponseStatus?
+  responseRationale    String?
+  responseNextStep     String?
+
+  themes      Theme[]
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Theme {
+  id           String     @id @default(cuid())
+  agendaItem   AgendaItem @relation(fields: [agendaItemId], references: [id], onDelete: Cascade)
+  agendaItemId String
+
+  title       String
+  description String
+
+  // Display order in the published "What we heard" section.
+  position Int @default(0)
+
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+}
+
+model Submission {
+  id           String     @id @default(cuid())
+  agendaItem   AgendaItem @relation(fields: [agendaItemId], references: [id], onDelete: Cascade)
+  agendaItemId String
+
+  // All optional per spec: public comment must not require identity.
+  name         String?
+  // Never rendered on any public page — stored only so a human admin can
+  // manually follow up later (e.g. once email notifications are built).
+  email        String?
+  neighborhood String?
+
+  comment String
+  // Consent to have an anonymized excerpt of this comment published as a
+  // featured quote in "What we heard".
+  consent Boolean @default(false)
+
+  // Admin-selected for display as an anonymized quote. Only ever set true
+  // when consent is also true.
+  featured Boolean @default(false)
+
+  theme   Theme?  @relation(fields: [themeId], references: [id], onDelete: SetNull)
+  themeId String?
+
+  createdAt DateTime @default(now())
+}
+
+enum ResponseStatus {
+  PROCEED
+  DO_NOT_PROCEED
+  NOT_YET
+}
