@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 8-Minute Republic | Sortition Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #090d16;
+    --card-bg: #111827;
+    --card-border: #1f2937;
+    --brand-blue: #0284c7;
+    --brand-blue-light: #38bdf8;
+    --brand-teal: #0d9488;
+    --brand-amber: #d97706;
+    --accent-gold: #f59e0b;
+    --brand-green: #10b981;
+    --brand-red: #ef4444;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --radius: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-image: radial-gradient(circle at 50% 10%, rgba(2, 132, 199, 0.15), transparent 60%);
+  }
+
+  .game-wrapper {
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Header & Progress */
+  .game-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: var(--brand-blue-light);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+  }
+
+  .game-header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .game-header p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  /* Progress Bar */
+  .progress-tracker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.03);
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .step-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+  }
+
+  .step-node.active {
+    opacity: 1;
+    color: var(--brand-blue-light);
+  }
+
+  .step-node.completed {
+    opacity: 1;
+    color: var(--brand-green);
+  }
+
+  .step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border: 1px solid #334155;
+  }
+
+  .step-node.active .step-num {
+    background: var(--brand-blue);
+    color: #fff;
+    border-color: var(--brand-blue-light);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  }
+
+  .step-node.completed .step-num {
+    background: var(--brand-green);
+    color: #fff;
+    border-color: #34d399;
+  }
+
+  /* Game Screen Cards */
+  .game-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    display: none;
+    animation: fadeIn 0.35s ease forwards;
+  }
+
+  .game-card.active-screen {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Persona Grid */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 18px 0;
+  }
+
+  @media (max-width: 700px) {
+    .persona-grid { grid-template-columns: 1fr; }
+    .progress-tracker { font-size: 0.7rem; }
+    .step-node span.step-text { display: none; }
+  }
+
+  .persona-card {
+    background: #1a2234;
+    border: 2px solid #2d3748;
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .persona-card:hover {
+    border-color: var(--brand-blue-light);
+    transform: translateY(-2px);
+  }
+
+  .persona-card.selected {
+    border-color: var(--brand-blue-light);
+    background: rgba(2, 132, 199, 0.15);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+  }
+
+  .persona-avatar {
+    font-size: 2.2rem;
+    margin-bottom: 6px;
+  }
+
+  .persona-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .persona-role {
+    font-size: 0.78rem;
+    color: var(--brand-blue-light);
+    margin-bottom: 6px;
+  }
+
+  .persona-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+  }
+
+  .lottery-box {
+    background: #0d1321;
+    border: 1px dashed var(--brand-blue);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  .perks-unlocked {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .perk-pill {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #334155;
+  }
+
+  /* Phase 2: Distinct Pro & Con Buttons and Separate Boxes */
+  .witness-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+  }
+
+  @media (max-width: 820px) {
+    .witness-container { grid-template-columns: 1fr; }
+  }
+
+  .witness-card {
+    background: #1a2234;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .witness-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .witness-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .witness-stance {
+    font-size: 0.76rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    line-height: 1.35;
+    background: rgba(255,255,255,0.03);
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Separate Question Sections */
+  .qa-block {
+    margin-bottom: 8px;
+  }
+
+  .q-btn-pro {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .q-btn-pro:hover {
+    background: #10b981;
+    color: #fff;
+  }
+
+  .q-btn-con {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .q-btn-con:hover {
+    background: #ef4444;
+    color: #fff;
+  }
+
+  .evidence-box-pro {
+    background: rgba(16, 185, 129, 0.12);
+    border-left: 3px solid #10b981;
+    padding: 8px 10px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.74rem;
+    color: #d1fae5;
+    margin-top: 6px;
+    display: none;
+    line-height: 1.35;
+  }
+
+  .evidence-box-con {
+    background: rgba(239, 68, 68, 0.12);
+    border-left: 3px solid #ef4444;
+    padding: 8px 10px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.74rem;
+    color: #fee2e2;
+    margin-top: 6px;
+    display: none;
+    line-height: 1.35;
+  }
+
+  /* Phase 3: Tradeoffs & Sliders */
+  .tradeoff-intro {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: #fde68a;
+  }
+
+  .slider-group {
+    background: #1a2234;
+    border: 1px solid #334155;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .slider-val {
+    color: var(--brand-blue-light);
+  }
+
+  .tradeoff-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.72rem;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #334155;
+  }
+
+  .pro-tag { color: #34d399; }
+  .con-tag { color: #f87171; }
+
+  .game-slider {
+    width: 100%;
+    height: 6px;
+    background: #334155;
+    border-radius: 3px;
+    outline: none;
+    accent-color: var(--brand-blue-light);
+    margin: 4px 0;
+  }
+
+  /* Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .metric-card {
+    background: #0d1321;
+    border: 1px solid #334155;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .metric-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .metric-val {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-top: 2px;
+  }
+
+  /* Table Deliberation Meter */
+  .consensus-meter-box {
+    background: #0d1321;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 18px;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  .meter-bar-container {
+    height: 16px;
+    background: #1e293b;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px 0;
+    position: relative;
+  }
+
+  .meter-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 60%, #10b981 100%);
+    transition: width 0.25s ease;
+  }
+
+  .threshold-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 75%;
+    width: 3px;
+    background: #ffffff;
+    box-shadow: 0 0 8px #fff;
+  }
+
+  .tablemates-status {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 650px) {
+    .tablemates-status { grid-template-columns: 1fr; }
+  }
+
+  .mate-badge {
+    font-size: 0.75rem;
+    background: #1a2234;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Phase 4: Step-by-Step Suspense Drama */
+  .drama-card {
+    background: #0d1321;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 24px;
+    margin: 18px 0;
+    position: relative;
+  }
+
+  .drama-stage-tag {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+  }
+
+  .drama-headline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .drama-body {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .suspense-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a2234;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    margin: 14px 0;
+    font-size: 0.82rem;
+  }
+
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 10px #f59e0b;
+    animation: pulse 1.2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+  }
+
+  .branch-outcome-box {
+    border-radius: 10px;
+    padding: 22px;
+    margin: 18px 0;
+    text-align: left;
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  .outcome-direct {
+    background: rgba(16, 185, 129, 0.12);
+    border: 2px solid #10b981;
+  }
+
+  .outcome-referendum {
+    background: rgba(2, 132, 199, 0.12);
+    border: 2px solid #0284c7;
+  }
+
+  .timeline-step {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .timeline-day {
+    font-weight: 800;
+    color: var(--brand-blue-light);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="game-wrapper">
+
+  <!-- Header -->
+  <div class="game-header">
+    <div class="badge-tag">Interactive Sortition Simulation</div>
+    <h1>The 8-Minute Republic</h1>
+    <p>Experience how 24 randomly selected neighbors break a 30-year policy deadlock through evidence, real trade-offs & binding power.</p>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-tracker">
+    <div class="step-node active" id="node-1">
+      <div class="step-num">1</div>
+      <span class="step-text">The Civic Lottery</span>
+    </div>
+    <div class="step-node" id="node-2">
+      <div class="step-num">2</div>
+      <span class="step-text">The Sifting Room</span>
+    </div>
+    <div class="step-node" id="node-3">
+      <div class="step-num">3</div>
+      <span class="step-text">Building Consensus</span>
+    </div>
+    <div class="step-node" id="node-4">
+      <div class="step-num">4</div>
+      <span class="step-text">Policy Enactment</span>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: THE LOTTERY -->
+  <div class="game-card active-screen" id="screen-1">
+    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; margin-bottom: 6px;">Step 1: Choose Your Persona</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">Sortition doesn't select professional politicians or donors. Pick who you want to play as:</p>
+    
+    <div class="persona-grid">
+      <div class="persona-card" onclick="selectPersona(this, 'Sarah Jenkins', 'Night Shift Nurse & Renter', '👩‍⚕️')">
+        <div class="persona-avatar">👩‍⚕️</div>
+        <div class="persona-name">Sarah Jenkins</div>
+        <div class="persona-role">Night Nurse • Renter</div>
+        <div class="persona-desc">Single parent with zero free time for Tuesday 8 PM council hearings. Worried about rising rent.</div>
+      </div>
+
+      <div class="persona-card" onclick="selectPersona(this, 'Marcus Vance', 'High School Teacher & Homeowner', '👨‍🏫')">
+        <div class="persona-avatar">👨‍🏫</div>
+        <div class="persona-name">Marcus Vance</div>
+        <div class="persona-role">Teacher • Homeowner</div>
+        <div class="persona-desc">Wants safe pedestrian trails and youth spaces, but worries about severe bridge traffic backups.</div>
+      </div>
+
+      <div class="persona-card" onclick="selectPersona(this, 'Elena Rostova', 'Retired Small Grocer', '👵')">
+        <div class="persona-avatar">👵</div>
+        <div class="persona-name">Elena Rostova</div>
+        <div class="persona-role">Retired Small Grocer</div>
+        <div class="persona-desc">Believes local commercial vitality is essential for jobs, but fears big-box chain store takeover.</div>
+      </div>
+    </div>
+
+    <div class="lottery-box" id="lotteryBox" style="display: none;">
+      <h3 style="font-family: 'Space Grotesk', sans-serif; color: var(--brand-blue-light); font-size: 1.1rem; margin-bottom: 4px;">🎰 Civic Lottery Draw</h3>
+      <p style="font-size: 0.85rem; color: #cbd5e1;" id="lotteryMessage">Running demographic matching algorithm...</p>
+      
+      <div class="perks-unlocked" id="perksBox" style="display: none;">
+        <div class="perk-pill">💵 $720 Direct Stipend</div>
+        <div class="perk-pill">🧸 Free Childcare Voucher</div>
+        <div class="perk-pill">🚌 Universal Transit Pass</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-draw" onclick="runLottery()" disabled>Spin the Civic Lottery &rarr;</button>
+  </div>
+
+  <!-- SCREEN 2: THE SIFTING ROOM (DISTINCT PRO & CON BOXES) -->
+  <div class="game-card" id="screen-2">
+    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; margin-bottom: 4px;">Step 2: The Sifting Room (Cross-Examining Competing Needs)</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;">
+      Riverbend’s 1.2-acre Depot has three credible, competing proposals. Each has genuine merits and real drawbacks. Cross-examine both the Pro and Con of each witness to uncover verified facts:
+    </p>
+
+    <div class="witness-container">
+      <!-- Witness 1: Affordable Housing Coalition -->
+      <div class="witness-card">
+        <div>
+          <div class="witness-header">
+            <span style="font-size: 1.4rem;">🏢</span>
+            <div>
+              <div class="witness-title">Community Housing Trust</div>
+              <div style="font-size: 0.7rem; color: #38bdf8;">Workforce Housing Advocate</div>
+            </div>
+          </div>
+          <div class="witness-stance">"Build 60 units of 100% affordable workforce housing with an on-site public daycare."</div>
+        </div>
+
+        <div>
+          <!-- Pro Block -->
+          <div class="qa-block">
+            <button class="q-btn-pro" onclick="revealEvidence('w1-pro')">&check; Pro: What is the community benefit?</button>
+            <div class="evidence-box-pro" id="w1-pro">
+              <strong>PRO AUDIT:</strong> Prevents displacement of 60 working families and secures $4M in state workforce housing grants.
+            </div>
+          </div>
+
+          <!-- Con Block -->
+          <div class="qa-block">
+            <button class="q-btn-con" onclick="revealEvidence('w1-con')">⚠️ Con: What is the spatial sacrifice?</button>
+            <div class="evidence-box-con" id="w1-con">
+              <strong>TRADE-OFF AUDIT:</strong> Takes up 60% of site footprint; eliminates room for a large public park and dedicated community green space.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Witness 2: Riverfront Conservation Trust -->
+      <div class="witness-card">
+        <div>
+          <div class="witness-header">
+            <span style="font-size: 1.4rem;">🌿</span>
+            <div>
+              <div class="witness-title">River Ecology Society</div>
+              <div style="font-size: 0.7rem; color: #34d399;">Conservation & Parks Trust</div>
+            </div>
+          </div>
+          <div class="witness-stance">"Convert the asphalt into a restored wetland park, public canopy trail, and open pavilion."</div>
+        </div>
+
+        <div>
+          <!-- Pro Block -->
+          <div class="qa-block">
+            <button class="q-btn-pro" onclick="revealEvidence('w2-pro')">&check; Pro: What environmental problem is solved?</button>
+            <div class="evidence-box-pro" id="w2-pro">
+              <strong>PRO AUDIT:</strong> Halts toxic urban runoff into the river and provides downtown's only heat-island cooling canopy.
+            </div>
+          </div>
+
+          <!-- Con Block -->
+          <div class="qa-block">
+            <button class="q-btn-con" onclick="revealEvidence('w2-con')">⚠️ Con: What is the fiscal/housing downside?</button>
+            <div class="evidence-box-con" id="w2-con">
+              <strong>TRADE-OFF AUDIT:</strong> Generates $0 in municipal tax revenue and requires an ongoing $45k/yr city maintenance line-item.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Witness 3: Local Merchant & Co-op Alliance -->
+      <div class="witness-card">
+        <div>
+          <div class="witness-header">
+            <span style="font-size: 1.4rem;">🏪</span>
+            <div>
+              <div class="witness-title">Downtown Merchant Alliance</div>
+              <div style="font-size: 0.7rem; color: #f59e0b;">Independent Small Businesses</div>
+            </div>
+          </div>
+          <div class="witness-stance">"Build ground-floor micro-retail stalls, co-op grocery expansion, and commercial parking."</div>
+        </div>
+
+        <div>
+          <!-- Pro Block -->
+          <div class="qa-block">
+            <button class="q-btn-pro" onclick="revealEvidence('w3-pro')">&check; Pro: How does this help local economy?</button>
+            <div class="evidence-box-pro" id="w3-pro">
+              <strong>PRO AUDIT:</strong> Creates 45 local jobs, incubates 8 immigrant-owned businesses, and generates $180k/yr in municipal tax revenue.
+            </div>
+          </div>
+
+          <!-- Con Block -->
+          <div class="qa-block">
+            <button class="q-btn-con" onclick="revealEvidence('w3-con')">⚠️ Con: What are the traffic & noise impacts?</button>
+            <div class="evidence-box-con" id="w3-con">
+              <strong>TRADE-OFF AUDIT:</strong> Requires rear semi-truck delivery bays and creates peak-hour turning bottlenecks on the main street.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-to-slider" onclick="goToStep3()" disabled>Lock In Evidence & Negotiate Trade-Offs (Unlocks at 3 Inquiries) &rarr;</button>
+  </div>
+
+  <!-- SCREEN 3: 75% SUPERMAJORITY & REAL TRADEOFFS (DEFAULTS TO 0%) -->
+  <div class="game-card" id="screen-3">
+    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; margin-bottom: 4px;">Step 3: Negotiate the Finite Site Trade-Offs</h2>
+    
+    <div class="tradeoff-intro">
+      ⚠️ <strong>Finite Land Constraint:</strong> The site is only 1.2 acres. All sliders start at <strong>0%</strong>. Move the sliders to allocate site space, balance tax revenue, manage traffic, and convince your tablemates to reach the <strong>75% Supermajority</strong>.
+    </div>
+
+    <!-- Sliders starting at 0% -->
+    <div class="slider-group">
+      <div class="slider-header">
+        <span>1. Public Wetland Park & River Trail</span>
+        <span class="slider-val" id="val-park">0% Footprint</span>
+      </div>
+      <input type="range" min="0" max="80" value="0" class="game-slider" id="slider-park" oninput="updateConsensus()">
+      <div class="tradeoff-detail">
+        <span class="pro-tag">➕ High Park: Cools neighborhood & public trail access</span>
+        <span class="con-tag">➖ Reduces space for housing & generates no tax revenue</span>
+      </div>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-header">
+        <span>2. Affordable Workforce Housing Co-op</span>
+        <span class="slider-val" id="val-housing">0% Footprint</span>
+      </div>
+      <input type="range" min="0" max="80" value="0" class="game-slider" id="slider-housing" oninput="updateConsensus()">
+      <div class="tradeoff-detail">
+        <span class="pro-tag">➕ High Housing: Secures 40+ homes for working families</span>
+        <span class="con-tag">➖ Increases transit demand & requires 4-story building height</span>
+      </div>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-header">
+        <span>3. Local Micro-Retail & Co-op Market Stalls</span>
+        <span class="slider-val" id="val-retail">0% Footprint</span>
+      </div>
+      <input type="range" min="0" max="80" value="0" class="game-slider" id="slider-retail" oninput="updateConsensus()">
+      <div class="tradeoff-detail">
+        <span class="pro-tag">➕ High Retail: Generates tax revenue to fund park upkeep</span>
+        <span class="con-tag">➖ Requires rear truck delivery access & adds vehicle trips</span>
+      </div>
+    </div>
+
+    <!-- Real-time Metrics Impact -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Land Footprint</div>
+        <div class="metric-val" id="metric-footprint" style="color: #f59e0b;">0% (Empty Site)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Tax Self-Sufficiency</div>
+        <div class="metric-val" id="metric-tax" style="color: #ef4444;">$0k/yr (Deficit)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Traffic & Logistics Flow</div>
+        <div class="metric-val" id="metric-traffic" style="color: #34d399;">Zero Traffic</div>
+      </div>
+    </div>
+
+    <!-- Deliberation Consensus Meter -->
+    <div class="consensus-meter-box">
+      <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+        <span>Assembly Supermajority Support</span>
+        <span id="consensus-percent" style="color: #ef4444;">0%</span>
+      </div>
+      <div class="meter-bar-container">
+        <div class="meter-bar-fill" id="meter-fill" style="width: 0%;"></div>
+        <div class="threshold-line" title="75% Supermajority Required"></div>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+        <span>0% Support</span>
+        <span style="color: #fff; font-weight: 700;">&uarr; 75% Statutory Mandate Threshold</span>
+        <span>100%</span>
+      </div>
+
+      <!-- Dynamic Feedback for all 4 Tablemates -->
+      <div class="tablemates-status">
+        <div class="mate-badge">
+          <span>👵 <strong>Elena</strong> (Merchant):</span>
+          <span id="m1-status">❌ Needs Retail (Min 20%)</span>
+        </div>
+        <div class="mate-badge">
+          <span>👨‍🏫 <strong>Marcus</strong> (Eco/Traffic):</span>
+          <span id="m2-status">❌ Needs Park & Trail (Min 30%)</span>
+        </div>
+        <div class="mate-badge">
+          <span>👩‍⚕️ <strong>Sarah</strong> (Housing):</span>
+          <span id="m3-status">❌ Needs Housing (Min 30%)</span>
+        </div>
+        <div class="mate-badge">
+          <span>👷 <strong>Jamal</strong> (Fiscal Realist):</span>
+          <span id="m4-status">❌ Revenue Deficit (<$100k)</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-submit-blueprint" onclick="startPhase4Buildup()" disabled>Reach 75% Consensus to Unlock Mandate &rarr;</button>
+  </div>
+
+  <!-- SCREEN 4: STEP-BY-STEP SUSPENSE & BRANCHING RESOLUTION -->
+  <div class="game-card" id="screen-4">
+    <div class="badge-tag" style="background: rgba(16, 185, 129, 0.15); border-color: #34d399; color: #34d399;">Mandated Pathway Activated</div>
+    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-top: 6px;">The Pre-Commitment Resolution</h2>
+    
+    <!-- Stage 4.1: Blueprint Submission -->
+    <div class="drama-card" id="drama-stage-1">
+      <span class="drama-stage-tag">Day 1: Transmittal to Municipal Clerk</span>
+      <div class="drama-headline">📜 The 24-Citizen Blueprint is Officially Delivered</div>
+      <p class="drama-body">
+        The assembly has concluded. Your compromise blueprint—backed by an verified <strong><span id="drama-consensus-val">0%</span> supermajority</strong>—has been delivered unedited to the City Council and published simultaneously on the public portal. 
+      </p>
+      <div class="suspense-indicator">
+        <div class="pulse-dot"></div>
+        <span><strong>Status:</strong> The 60-Day Pre-Commitment Statutory Clock is now officially ticking.</span>
+      </div>
+      <button class="btn-primary" onclick="advanceDramaStage(2)">Advance to Day 30: The Council Work Session &rarr;</button>
+    </div>
+
+    <!-- Stage 4.2: Day 30 Council Work Session & Political Tension -->
+    <div class="drama-card" id="drama-stage-2" style="display: none;">
+      <span class="drama-stage-tag" style="color: #f59e0b; border-color: #f59e0b;">Day 30: Council Chamber Under Pressure</span>
+      <div class="drama-headline">🏛️ The Work Session: Special Interests Mobilize</div>
+      <p class="drama-body">
+        Elected officials convene for the mandatory 30-day public work session. Lobbyists and vocal interest groups crowd the corridors, pressuring council members to delay, amend, or shelf the assembly's compromise.
+      </p>
+      <div class="suspense-indicator" style="border-color: #f59e0b;">
+        <div class="pulse-dot" style="background: #ef4444; box-shadow: 0 0 10px #ef4444;"></div>
+        <span><strong>Tension:</strong> Will the Council vote to adopt your blueprint, or will they stall and trigger the automatic ballot failsafe?</span>
+      </div>
+      <button class="btn-primary" onclick="advanceDramaStage(3)">Advance to Day 60: The Statutory Deadline &rarr;</button>
+    </div>
+
+    <!-- Stage 4.3: Day 60 Deadline Decision -->
+    <div class="drama-card" id="drama-stage-3" style="display: none;">
+      <span class="drama-stage-tag" style="color: #ef4444; border-color: #ef4444;">Day 60: Final Statutory Deadline</span>
+      <div class="drama-headline">⏳ The 60-Day Clock Hits Zero: Gavel Strikes</div>
+      <p class="drama-body">
+        Under the City's Pre-Commitment Ordinance, today is the final legal deadline. The Council must either formally record their up-or-down vote or lose control of the outcome to the voters.
+      </p>
+      <div class="suspense-indicator" style="border-color: #10b981;">
+        <div class="pulse-dot" style="background: #10b981; box-shadow: 0 0 10px #10b981;"></div>
+        <span><strong>Outcome Ready:</strong> The statutory legal trigger is executing...</span>
+      </div>
+      <button class="btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);" onclick="advanceDramaStage(4)">Reveal Final Legislative Outcome &rarr;</button>
+    </div>
+
+    <!-- Stage 4.4: Dynamic Outcome Reveal -->
+    <div id="drama-stage-4" style="display: none;">
+      <div id="dynamic-branch-outcome"></div>
+
+      <div style="background: #111827; border: 1px solid var(--brand-blue); border-radius: 8px; padding: 18px; margin-top: 16px; text-align: center;">
+        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; color: #fff; margin-bottom: 6px;">Now Bring This Real Power to Takoma Park</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 14px auto;">
+          Takoma Junction has been stalled for decades. Enter the Civic Lottery today and be one of the 24 neighbors who write the binding community solution.
+        </p>
+        <button class="btn-primary" style="margin-top: 0;" onclick="alert('Redirecting to the Takoma Junction Civic Lottery Registration Portal!')">Enter Takoma Junction Lottery &rarr;</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  let selectedPersona = null;
+  let evidenceCount = 0;
+  let finalScore = 0;
+  let finalPark = 0;
+  let finalHousing = 0;
+  let finalRetail = 0;
+
+  function selectPersona(el, name, role, avatar) {
+    document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPersona = { name, role, avatar };
+    document.getElementById('btn-draw').disabled = false;
+  }
+
+  function runLottery() {
+    const btn = document.getElementById('btn-draw');
+    btn.disabled = true;
+    const box = document.getElementById('lotteryBox');
+    const msg = document.getElementById('lotteryMessage');
+    const perks = document.getElementById('perksBox');
+    
+    box.style.display = 'block';
+    
+    let dots = 0;
+    const interval = setInterval(() => {
+      dots++;
+      msg.textContent = 'Stratified lottery matching: Scanning Ward & Demographic proportions' + '.'.repeat(dots % 4);
+    }, 180);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      msg.innerHTML = `<strong>CONGRATULATIONS ${selectedPersona.name.toUpperCase()}!</strong><br>Your name was drawn from the census-stratified civic lottery pool.`;
+      perks.style.display = 'grid';
+      btn.textContent = 'Enter Deliberation Chamber →';
+      btn.disabled = false;
+      btn.onclick = () => goToStep(2);
+    }, 1400);
+  }
+
+  function revealEvidence(id) {
+    const ev = document.getElementById(id);
+    if (ev.style.display !== 'block') {
+      ev.style.display = 'block';
+      evidenceCount++;
+      if (evidenceCount >= 3) {
+        const btn = document.getElementById('btn-to-slider');
+        btn.disabled = false;
+        btn.textContent = 'Lock In Evidence & Negotiate Trade-Offs →';
+      }
+    }
+  }
+
+  function goToStep3() {
+    goToStep(3);
+    updateConsensus();
+  }
+
+  function updateConsensus() {
+    finalPark = parseInt(document.getElementById('slider-park').value);
+    finalHousing = parseInt(document.getElementById('slider-housing').value);
+    finalRetail = parseInt(document.getElementById('slider-retail').value);
+
+    document.getElementById('val-park').textContent = finalPark + '% Footprint';
+    document.getElementById('val-housing').textContent = finalHousing + '% Footprint';
+    document.getElementById('val-retail').textContent = finalRetail + '% Footprint';
+
+    const totalFootprint = finalPark + finalHousing + finalRetail;
+    const footprintLabel = document.getElementById('metric-footprint');
+    
+    // Tax revenue calc
+    const taxVal = (finalRetail * 5.5) + (finalHousing * 1.8);
+    const taxLabel = document.getElementById('metric-tax');
+    taxLabel.textContent = `$${Math.round(taxVal)}k/yr (${taxVal > 140 ? 'Strong' : 'Moderate'})`;
+
+    // Traffic impact calc
+    const trafficLabel = document.getElementById('metric-traffic');
+    if (finalRetail > 45 || totalFootprint > 120) {
+      trafficLabel.textContent = '⚠️ Severe Bottleneck';
+      trafficLabel.style.color = '#ef4444';
+    } else if (finalRetail >= 20 && finalRetail <= 45) {
+      trafficLabel.textContent = '⚡ Managed Delivery Flow';
+      trafficLabel.style.color = '#38bdf8';
+    } else {
+      trafficLabel.textContent = '🌿 Very Low Traffic';
+      trafficLabel.style.color = '#34d399';
+    }
+
+    if (totalFootprint === 0) {
+      footprintLabel.textContent = '0% (Empty Site)';
+      footprintLabel.style.color = '#ef4444';
+      taxLabel.textContent = '$0k/yr (Deficit)';
+      taxLabel.style.color = '#ef4444';
+    } else if (totalFootprint > 110) {
+      footprintLabel.textContent = `${totalFootprint}% (Overbuilt!)`;
+      footprintLabel.style.color = '#ef4444';
+    } else if (totalFootprint < 85) {
+      footprintLabel.textContent = `${totalFootprint}% (Underutilized)`;
+      footprintLabel.style.color = '#f59e0b';
+    } else {
+      footprintLabel.textContent = `${totalFootprint}% (Balanced Fit)`;
+      footprintLabel.style.color = '#34d399';
+    }
+
+    // Base score calculation
+    let score = (totalFootprint === 0) ? 0 : 20;
+
+    // --- 1. ELENA (Local Merchant) ---
+    let m1 = false;
+    let m1_msg = '';
+    if (finalRetail < 20) {
+      m1_msg = '<span style="color:#ef4444;">❌ Needs Retail (Min 20%)</span>';
+    } else if (finalRetail > 45) {
+      m1_msg = '<span style="color:#ef4444;">❌ Too Commercial / Sprawl</span>';
+    } else {
+      m1 = true;
+      score += 20;
+      m1_msg = '<span style="color:#34d399;">✅ YES (Co-op Thrives)</span>';
+    }
+
+    // --- 2. MARCUS (Eco / Traffic) ---
+    let m2 = false;
+    let m2_msg = '';
+    if (finalPark < 30) {
+      m2_msg = '<span style="color:#ef4444;">❌ Needs Park & Trail (Min 30%)</span>';
+    } else if (finalRetail > 45) {
+      m2_msg = '<span style="color:#ef4444;">❌ Traffic Congestion</span>';
+    } else {
+      m2 = true;
+      score += 20;
+      m2_msg = '<span style="color:#34d399;">✅ YES (Green & Safe)</span>';
+    }
+
+    // --- 3. SARAH (Workforce Housing) ---
+    let m3 = false;
+    let m3_msg = '';
+    if (finalHousing < 30) {
+      m3_msg = '<span style="color:#ef4444;">❌ Needs Housing (Min 30%)</span>';
+    } else if (finalHousing > 60) {
+      m3_msg = '<span style="color:#ef4444;">❌ Out of Scale / Overcrowded</span>';
+    } else {
+      m3 = true;
+      score += 20;
+      m3_msg = '<span style="color:#34d399;">✅ YES (Affordable Units)</span>';
+    }
+
+    // --- 4. JAMAL (Fiscal Realist) ---
+    let m4 = false;
+    let m4_msg = '';
+    if (totalFootprint > 110) {
+      m4_msg = '<span style="color:#ef4444;">❌ Overbuilt / Capital Deficit</span>';
+    } else if (taxVal < 100) {
+      m4_msg = '<span style="color:#ef4444;">❌ Revenue Deficit (<$100k)</span>';
+    } else {
+      m4 = true;
+      score += 20;
+      m4_msg = '<span style="color:#34d399;">✅ YES (Self-Sustaining)</span>';
+    }
+
+    finalScore = (totalFootprint === 0) ? 0 : Math.min(100, Math.max(10, score));
+
+    const meter = document.getElementById('meter-fill');
+    const percentLabel = document.getElementById('consensus-percent');
+    meter.style.width = finalScore + '%';
+    percentLabel.textContent = finalScore + '%';
+
+    document.getElementById('m1-status').innerHTML = m1_msg;
+    document.getElementById('m2-status').innerHTML = m2_msg;
+    document.getElementById('m3-status').innerHTML = m3_msg;
+    document.getElementById('m4-status').innerHTML = m4_msg;
+
+    const submitBtn = document.getElementById('btn-submit-blueprint');
+    if (finalScore >= 75) {
+      percentLabel.style.color = '#34d399';
+      submitBtn.disabled = false;
+      submitBtn.textContent = `Submit Supermajority Blueprint (${finalScore}%) →`;
+    } else {
+      percentLabel.style.color = (finalScore === 0) ? '#ef4444' : '#f59e0b';
+      submitBtn.disabled = true;
+      submitBtn.textContent = `Reach 75% Consensus to Unlock Mandate (Currently ${finalScore}%)`;
+    }
+  }
+
+  function startPhase4Buildup() {
+    goToStep(4);
+    document.getElementById('drama-consensus-val').textContent = finalScore + '%';
+    document.getElementById('drama-stage-1').style.display = 'block';
+    document.getElementById('drama-stage-2').style.display = 'none';
+    document.getElementById('drama-stage-3').style.display = 'none';
+    document.getElementById('drama-stage-4').style.display = 'none';
+  }
+
+  function advanceDramaStage(stageNum) {
+    if (stageNum === 2) {
+      document.getElementById('drama-stage-1').style.display = 'none';
+      document.getElementById('drama-stage-2').style.display = 'block';
+    } else if (stageNum === 3) {
+      document.getElementById('drama-stage-2').style.display = 'none';
+      document.getElementById('drama-stage-3').style.display = 'block';
+    } else if (stageNum === 4) {
+      document.getElementById('drama-stage-3').style.display = 'none';
+      document.getElementById('drama-stage-4').style.display = 'block';
+      renderFinalOutcome();
+    }
+  }
+
+  function renderFinalOutcome() {
+    const container = document.getElementById('dynamic-branch-outcome');
+
+    if (finalScore >= 95) {
+      // BRANCH 1: Unanimous Fast-Track Adoption
+      container.innerHTML = `
+        <div class="branch-outcome-box outcome-direct">
+          <div class="outcome-title" style="color: #34d399;">
+            <span>🏛️ Outcome A: Direct Council Adoption (${finalScore}% Consensus)</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #e2e8f0; margin-bottom: 12px;">
+            Your assembly achieved unanimous consensus (${finalScore}%). Faced with an undeniable demographic mandate, City Council passed the blueprint directly into municipal law without amendments.
+          </p>
+          <div class="timeline-step">
+            <span class="timeline-day">Day 20:</span>
+            <span>Unredacted Community Blueprint published on City portal.</span>
+          </div>
+          <div class="timeline-step">
+            <span class="timeline-day">Day 45:</span>
+            <span>City Council holds formal public hearing and passes unanimous recorded vote enacting design criteria into the site RFP.</span>
+          </div>
+          <div class="timeline-step">
+            <span class="timeline-day">Result:</span>
+            <span style="color: #34d399; font-weight: 700;">Groundbreaking scheduled without lawsuits or council filibuster!</span>
+          </div>
+        </div>
+      `;
+    } else if (finalScore >= 75) {
+      // BRANCH 2: Automatic Ballot Trigger (Referendum Victory)
+      container.innerHTML = `
+        <div class="branch-outcome-box outcome-referendum">
+          <div class="outcome-title" style="color: #38bdf8;">
+            <span>🗳️ Outcome B: The Automatic Ballot Trigger (${finalScore}% Consensus)</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #e2e8f0; margin-bottom: 12px;">
+            The assembly passed the plan with a solid ${finalScore}% supermajority. Under pressure from special interest lobbyists, City Council hesitated and missed the 60-day statutory vote deadline. <strong>The statutory failsafe activated automatically!</strong>
+          </p>
+          <div class="timeline-step">
+            <span class="timeline-day">Day 61:</span>
+            <span>Pre-Commitment Ordinance triggers automatic referral directly to the municipal election ballot.</span>
+          </div>
+          <div class="timeline-step">
+            <span class="timeline-day">Election Day:</span>
+            <span>Voters see the independent "Citizen Statement" in their voter pamphlets and pass the referendum with a <strong>68% public majority</strong>!</span>
+          </div>
+          <div class="timeline-step">
+            <span class="timeline-day">Result:</span>
+            <span style="color: #38bdf8; font-weight: 700;">The community bypassed political hesitation and enacted the plan by direct vote!</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  function goToStep(stepNum) {
+    document.querySelectorAll('.game-card').forEach(c => c.classList.remove('active-screen'));
+    document.getElementById('screen-' + stepNum).classList.add('active-screen');
+
+    for (let i = 1; i <= 4; i++) {
+      const node = document.getElementById('node-' + i);
+      node.classList.remove('active', 'completed');
+      if (i < stepNum) node.classList.add('completed');
+      else if (i === stepNum) node.classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>
