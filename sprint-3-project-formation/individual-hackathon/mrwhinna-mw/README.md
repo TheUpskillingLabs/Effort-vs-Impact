@@ -4,6 +4,8 @@ A civic-engagement game: browse federal rules that are open for public comment, 
 
 Prototype. The dockets are illustrative placeholders, not live regulations.gov data.
 
+Take the live surve at https://mrwhinna-mw.github.io/communitycommons_survey/survey.html and view the teset app at https://mrwhinna-mw.github.io/communitycommons_survey/index.html
+
 ## What's in here
 
 | File | What it is |
