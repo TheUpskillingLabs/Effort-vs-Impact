@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #e6e4dc; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  * { box-sizing: border-box; }
+</style>
+</helmet>
+
+<section style="display: flex; flex-wrap: wrap; gap: 72px; align-items: flex-start; padding: 56px 56px 96px; font-family: 'IBM Plex Mono', monospace;">
+
+  <div id="1a" style="width: 1240px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; align-items: baseline; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #4d4b43;">
+      <span style="background: #16150f; color: #f6f5f0; padding: 3px 9px; font-weight: 600;">1a</span>
+      <span>Register — paper, ledger, legislative record</span>
+    </div>
+
+    <div style="background: #f6f5f0; color: #16150f; border: 1px solid #cdcabc;">
+
+      <header style="display: flex; align-items: center; justify-content: space-between; padding: 20px 44px; border-bottom: 1px solid #16150f;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 22px; height: 22px; background: #16150f; transform: rotate(45deg);"></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;">Direct Assembly</span>
+        </div>
+        <nav style="display: flex; gap: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #4d4b43;">
+          <a href="#1a">Ballot tracker</a>
+          <a href="#1a">Assemblies</a>
+          <a href="#1a">Open calls</a>
+          <a href="#1a">Authority map</a>
+          <a href="#1a" style="color: #16150f; font-weight: 600;">Join the lottery</a>
+        </nav>
+      </header>
+
+      <div style="display: grid; grid-template-columns: 1.35fr 1fr; border-bottom: 1px solid #cdcabc;">
+        <div style="padding: 62px 44px 54px; border-right: 1px solid #cdcabc;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8779; margin-bottom: 26px;">Ordinary residents, drawn by lot, writing law</div>
+          <h1 style="font-family: Newsreader, serif; font-weight: 300; font-size: 62px; line-height: 1.04; letter-spacing: -0.02em; margin: 0 0 24px; text-wrap: pretty;">Fourteen citizen assemblies. Nine measures on a ballot this year.</h1>
+          <p style="font-family: Newsreader, serif; font-size: 21px; line-height: 1.5; color: #4d4b43; margin: 0 0 34px; max-width: 46ch; text-wrap: pretty;">We convene randomly selected residents in cities where charter law already lets the public write and refer ordinances. The assembly deliberates, publishes a recommendation, and the recommendation goes to the voters.</p>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <a href="#1a" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; background: #16150f; color: #f6f5f0; padding: 15px 26px;">Track ballot initiatives</a>
+            <a href="#1a" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid #16150f; padding: 14px 24px;">Enter the lottery</a>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+          <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+            <div style="padding: 30px 26px; border-bottom: 1px solid #cdcabc; border-right: 1px solid #cdcabc;">
+              <div style="font-family: Newsreader, serif; font-size: 46px; font-weight: 400; line-height: 1;">{{ s.n }}</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8779; margin-top: 10px; line-height: 1.5;">{{ s.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="padding: 44px 44px 10px; display: flex; align-items: baseline; justify-content: space-between;">
+        <h2 style="font-family: Newsreader, serif; font-weight: 400; font-size: 30px; margin: 0;">Ballot tracker</h2>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8779;">Updated 15 Aug 2026 · 12 measures</div>
+      </div>
+
+      <div style="padding: 18px 44px 46px;">
+        <table style="width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+          <thead>
+            <tr style="border-top: 1px solid #16150f; border-bottom: 1px solid #16150f;">
+              <th style="text-align: left; padding: 10px 0; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a8779; font-weight: 500;">Jurisdiction</th>
+              <th style="text-align: left; padding: 10px 0; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a8779; font-weight: 500;">Measure</th>
+              <th style="text-align: left; padding: 10px 0; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a8779; font-weight: 500;">Stage</th>
+              <th style="text-align: left; padding: 10px 0; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a8779; font-weight: 500;">Authority</th>
+              <th style="text-align: right; padding: 10px 0; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a8779; font-weight: 500;">Result / date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ measures }}" as="m" hint-placeholder-count="8">
+              <tr style="border-bottom: 1px solid #ded9c9;">
+                <td style="padding: 15px 18px 15px 0; vertical-align: top; white-space: nowrap;">
+                  <div style="font-family: Newsreader, serif; font-size: 19px;">{{ m.city }}</div>
+                  <div style="font-size: 11px; color: #8a8779; letter-spacing: 0.08em; margin-top: 3px;">{{ m.st }}</div>
+                </td>
+                <td style="padding: 15px 18px 15px 0; vertical-align: top;">
+                  <div style="font-size: 13.5px; line-height: 1.45;">{{ m.title }}</div>
+                  <div style="font-size: 11px; color: #8a8779; margin-top: 4px; letter-spacing: 0.04em;">{{ m.topic }}</div>
+                </td>
+                <td style="padding: 15px 18px 15px 0; vertical-align: top; white-space: nowrap;">
+                  <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #16150f; padding: 3px 8px;">{{ m.stage }}</span>
+                  <div style="font-size: 11px; color: #8a8779; margin-top: 6px;">{{ m.meta }}</div>
+                </td>
+                <td style="padding: 15px 18px 15px 0; vertical-align: top; font-size: 11.5px; color: #4d4b43; line-height: 1.5; max-width: 24ch;">{{ m.authority }}</td>
+                <td style="padding: 15px 0; vertical-align: top; text-align: right; white-space: nowrap;">
+                  <div style="font-family: Newsreader, serif; font-size: 20px;">{{ m.result }}</div>
+                  <div style="font-size: 11px; color: #8a8779; margin-top: 3px;">{{ m.date }}</div>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #cdcabc;">
+        <div style="padding: 40px 44px; border-right: 1px solid #cdcabc;">
+          <h2 style="font-family: Newsreader, serif; font-weight: 400; font-size: 26px; margin: 0 0 20px;">Assemblies in flight</h2>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ assemblies }}" as="a" hint-placeholder-count="4">
+              <a href="#1a" style="display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; padding: 16px 0; border-top: 1px solid #ded9c9; text-decoration: none;">
+                <div style="font-family: Newsreader, serif; font-size: 19px; line-height: 1.3;">{{ a.topic }}</div>
+                <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8779; text-align: right; padding-top: 5px;">{{ a.phase }}</div>
+                <div style="font-size: 11.5px; color: #4d4b43;">{{ a.where }}</div>
+                <div style="font-size: 11.5px; color: #8a8779; text-align: right;">{{ a.panel }}</div>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding: 40px 44px;">
+          <h2 style="font-family: Newsreader, serif; font-weight: 400; font-size: 26px; margin: 0 0 20px;">Open calls for topics</h2>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ rfps }}" as="r" hint-placeholder-count="3">
+              <a href="#1a" style="display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; padding: 16px 0; border-top: 1px solid #ded9c9;">
+                <div style="font-family: Newsreader, serif; font-size: 19px; line-height: 1.3;">{{ r.title }}</div>
+                <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8779; text-align: right; padding-top: 5px;">Due {{ r.due }}</div>
+                <div style="font-size: 11.5px; color: #4d4b43;">{{ r.where }}</div>
+                <div style="font-size: 11.5px; color: #8a8779; text-align: right;">{{ r.budget }}</div>
+              </a>
+            </sc-for>
+          </div>
+          <a href="#1a" style="display: inline-block; margin-top: 26px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid #16150f; padding-bottom: 3px;">Submit a proposal →</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1.1fr; border-top: 1px solid #16150f; background: #efeee7;">
+        <div style="padding: 46px 44px; border-right: 1px solid #cdcabc;">
+          <h2 style="font-family: Newsreader, serif; font-weight: 400; font-size: 30px; margin: 0 0 12px;">Enter the lottery for your locality</h2>
+          <p style="font-family: Newsreader, serif; font-size: 18px; line-height: 1.5; color: #4d4b43; margin: 0 0 26px; max-width: 42ch;">Panels are drawn at random and then stratified so the room matches the city on age, income, tenure, geography, and ward.</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; max-width: 380px;">
+            <input placeholder="ZIP code" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 13px 14px; border: 1px solid #b9b6a7; background: #f6f5f0; color: #16150f;">
+            <input placeholder="Email" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 13px 14px; border: 1px solid #b9b6a7; background: #f6f5f0; color: #16150f;">
+            <button style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 15px; border: 0; background: #16150f; color: #f6f5f0; cursor: pointer;">Check eligibility</button>
+            <div style="font-size: 11px; color: #8a8779; line-height: 1.6;">80304 · Boulder, Colorado — home rule charter, 5% of registered electors to refer an ordinance. One assembly seated, one measure certified.</div>
+          </div>
+        </div>
+        <div style="padding: 46px 44px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px;">
+            <h2 style="font-family: Newsreader, serif; font-weight: 400; font-size: 30px; margin: 0;">Where this is legal</h2>
+            <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8779;">Municipal initiative &amp; referendum</span>
+          </div>
+          <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #4d4b43; margin: 0 0 22px; max-width: 46ch;">Eighteen states guarantee local initiative and referendum across most municipalities. Twenty-six more allow it only in charter or home-rule cities. That is the map we are working down.</p>
+          <div style="display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; max-width: 480px;">
+            <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="50">
+              <div title="{{ t.title }}" style="{{ t.paperStyle }}">{{ t.ab }}</div>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #4d4b43;">
+            <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+              <span style="display: inline-flex; align-items: center; gap: 7px;"><span style="{{ l.swatchPaper }}"></span>{{ l.label }} ({{ l.n }})</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <footer style="display: flex; justify-content: space-between; align-items: baseline; padding: 26px 44px; border-top: 1px solid #cdcabc; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8779;">
+        <span>Direct Assembly · A demonstration program</span>
+        <span>Authority data: NCSL, Ballotpedia, ALEC Levers of Power (2018) · verify against local charter</span>
+      </footer>
+    </div>
+  </div>
+
+  <div id="1b" style="width: 1240px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; align-items: baseline; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #4d4b43;">
+      <span style="background: #16150f; color: #f6f5f0; padding: 3px 9px; font-weight: 600;">1b</span>
+      <span>Survey — dark field, map-first, pipeline board</span>
+    </div>
+
+    <div style="background: #0f100e; color: #eae7dc; border: 1px solid #0f100e;">
+
+      <header style="display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid #2a2b27;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 18px; height: 18px; background: #eb6834; transform: rotate(45deg);"></div>
+          <span style="font-family: Archivo, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.02em;">DIRECT ASSEMBLY</span>
+        </div>
+        <nav style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #8d8b7f;">
+          <a href="#1b" style="color: #eae7dc;">Tracker</a>
+          <a href="#1b">In flight</a>
+          <a href="#1b">Open calls</a>
+          <a href="#1b">Lottery</a>
+          <a href="#1b" style="border: 1px solid #eb6834; color: #eb6834; padding: 6px 14px;">Track initiatives</a>
+        </nav>
+      </header>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-bottom: 1px solid #2a2b27;">
+        <div style="padding: 56px 40px 48px;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #eb6834; margin-bottom: 22px;">Local direct democracy, mapped</div>
+          <h1 style="font-family: Archivo, sans-serif; font-size: 60px; font-weight: 700; line-height: 0.98; letter-spacing: -0.025em; text-transform: uppercase; margin: 0 0 22px; text-wrap: pretty;">Nine assembly recommendations are on a ballot this November</h1>
+          <p style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.65; color: #a5a397; margin: 0 0 30px; max-width: 48ch;">Randomly selected residents deliberate. Their recommendation goes to a signature drive, then to the voters. Follow every measure from draft to result.</p>
+          <div style="display: flex; gap: 10px;">
+            <a href="#1b" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; background: #eb6834; color: #0f100e; padding: 14px 24px;">Track ballot initiatives</a>
+            <a href="#1b" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid #3b3c37; color: #eae7dc; padding: 13px 22px;">Enter the lottery</a>
+          </div>
+        </div>
+        <div style="padding: 40px 40px 34px; border-left: 1px solid #2a2b27;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8d8b7f;">
+            <span>Municipal initiative &amp; referendum authority</span>
+            <span>51 jurisdictions</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px;">
+            <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="50">
+              <div title="{{ t.title }}" style="{{ t.darkStyle }}">{{ t.ab }}</div>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #a5a397;">
+            <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+              <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="{{ l.swatchDark }}"></span>{{ l.label }} ({{ l.n }})</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid #2a2b27;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="padding: 26px 40px; border-right: 1px solid #2a2b27;">
+            <div style="font-family: Archivo, sans-serif; font-size: 40px; font-weight: 700; line-height: 1;">{{ s.n }}</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8d8b7f; margin-top: 8px; line-height: 1.5;">{{ s.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="padding: 40px 40px 16px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+        <h2 style="font-family: Archivo, sans-serif; font-size: 26px; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; margin: 0;">Ballot tracker</h2>
+        <div style="display: flex; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+            <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="padding: 10px 40px 44px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: start;">
+        <sc-for list="{{ pipeline }}" as="col" hint-placeholder-count="5">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid #3b3c37; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8d8b7f;">
+              <span>{{ col.stage }}</span><span>{{ col.count }}</span>
+            </div>
+            <sc-for list="{{ col.items }}" as="m" hint-placeholder-count="2">
+              <a href="#1b" style="{{ m.cardStyle }}">
+                <div style="font-family: Archivo, sans-serif; font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em;">{{ m.city }}, {{ m.st }}</div>
+                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; color: #cdcabc; margin-top: 8px;">{{ m.title }}</div>
+                <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #8d8b7f;">
+                  <span>{{ m.meta }}</span><span style="{{ m.resultStyle }}">{{ m.resultShort }}</span>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #2a2b27;">
+        <div style="padding: 38px 40px; border-right: 1px solid #2a2b27;">
+          <h2 style="font-family: Archivo, sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; margin: 0 0 18px;">Assemblies in flight</h2>
+          <sc-for list="{{ assemblies }}" as="a" hint-placeholder-count="4">
+            <a href="#1b" style="display: grid; grid-template-columns: 1fr auto; gap: 5px 16px; padding: 14px 0; border-top: 1px solid #2a2b27; font-family: 'IBM Plex Mono', monospace;">
+              <div style="font-size: 13.5px; color: #eae7dc; line-height: 1.4;">{{ a.topic }}</div>
+              <div style="font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #eb6834; text-align: right;">{{ a.phase }}</div>
+              <div style="font-size: 11.5px; color: #8d8b7f;">{{ a.where }}</div>
+              <div style="font-size: 11.5px; color: #8d8b7f; text-align: right;">{{ a.panel }}</div>
+            </a>
+          </sc-for>
+        </div>
+        <div style="padding: 38px 40px;">
+          <h2 style="font-family: Archivo, sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; margin: 0 0 18px;">Open calls for topics</h2>
+          <sc-for list="{{ rfps }}" as="r" hint-placeholder-count="3">
+            <a href="#1b" style="display: grid; grid-template-columns: 1fr auto; gap: 5px 16px; padding: 14px 0; border-top: 1px solid #2a2b27; font-family: 'IBM Plex Mono', monospace;">
+              <div style="font-size: 13.5px; color: #eae7dc; line-height: 1.4;">{{ r.title }}</div>
+              <div style="font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #eb6834; text-align: right;">Due {{ r.due }}</div>
+              <div style="font-size: 11.5px; color: #8d8b7f;">{{ r.where }}</div>
+              <div style="font-size: 11.5px; color: #8d8b7f; text-align: right;">{{ r.budget }}</div>
+            </a>
+          </sc-for>
+          <a href="#1b" style="display: inline-block; margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #eb6834; border-bottom: 1px solid #eb6834; padding-bottom: 3px;">Submit a proposal →</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; padding: 44px 40px; border-top: 1px solid #2a2b27; background: #16170f;">
+        <div>
+          <h2 style="font-family: Archivo, sans-serif; font-size: 34px; font-weight: 700; text-transform: uppercase; line-height: 1.02; margin: 0 0 12px;">Enter the lottery<br>for your locality</h2>
+          <p style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.6; color: #a5a397; margin: 0; max-width: 52ch;">Panels are drawn at random, then stratified to match the city on age, income, tenure, ward, and geography. Serving is paid, and childcare is covered.</p>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input placeholder="ZIP" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 13px 14px; width: 110px; border: 1px solid #3b3c37; background: #0f100e; color: #eae7dc;">
+          <input placeholder="Email" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 13px 14px; width: 240px; border: 1px solid #3b3c37; background: #0f100e; color: #eae7dc;">
+          <button style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 14px 22px; border: 0; background: #eb6834; color: #0f100e; cursor: pointer;">Check eligibility</button>
+        </div>
+      </div>
+
+      <footer style="display: flex; justify-content: space-between; padding: 22px 40px; border-top: 1px solid #2a2b27; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #6f6d63;">
+        <span>Direct Assembly · A demonstration program</span>
+        <span>Authority data: NCSL, Ballotpedia, ALEC (2018) · verify against local charter</span>
+      </footer>
+    </div>
+  </div>
+
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#eb6834&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#eb6834&quot;,&quot;#1c5cab&quot;,&quot;#1baf7a&quot;,&quot;#c2451c&quot;]}}">
+const STATES = [
+["AL",6,6,"no"],["AK",0,0,"yes"],["AZ",5,1,"yes"],["AR",5,4,"yes"],["CA",4,0,"yes"],["CO",4,2,"yes"],
+["CT",3,9,"limited"],["DE",4,9,"limited"],["FL",7,8,"limited"],["GA",6,7,"yes"],["HI",7,0,"na"],["ID",2,1,"yes"],
+["IL",2,5,"limited"],["IN",3,5,"no"],["IA",3,4,"limited"],["KS",5,3,"yes"],["KY",4,5,"ronly"],["LA",6,4,"limited"],
+["ME",0,10,"limited"],["MD",4,8,"limited"],["MA",2,9,"limited"],["MI",2,7,"limited"],["MN",2,4,"limited"],["MS",6,5,"limited"],
+["MO",4,4,"limited"],["MT",2,2,"yes"],["NE",4,3,"yes"],["NV",3,1,"yes"],["NH",1,10,"limited"],["NJ",3,8,"limited"],
+["NM",5,2,"limited"],["NY",2,8,"limited"],["NC",5,6,"no"],["ND",2,3,"limited"],["OH",3,6,"yes"],["OK",6,3,"yes"],
+["OR",3,0,"yes"],["PA",3,7,"limited"],["RI",3,10,"limited"],["SC",5,7,"yes"],["SD",3,3,"yes"],["TN",5,5,"limited"],
+["TX",7,3,"limited"],["UT",4,1,"yes"],["VT",1,9,"limited"],["VA",4,7,"limited"],["WA",2,0,"limited"],
+["WV",4,6,"limited"],["WI",2,6,"yes"],["WY",3,2,"ronly"],
+];
+
+const CLASSES = {
+  yes:     { label: "Broad local I&R", paper: ["#1c5cab", "#f6f5f0"], dark: ["#5598e7", "#0f100e"] },
+  limited: { label: "Charter-dependent", paper: ["#a9c8ee", "#16150f"], dark: ["#1f4d86", "#dbe6f5"] },
+  ronly:   { label: "Referendum only", paper: ["#eb6834", "#f6f5f0"], dark: ["#eb6834", "#0f100e"] },
+  no:      { label: "None", paper: ["#d6d5cf", "#5c5a51"], dark: ["#2f302b", "#7d7b71"] },
+  na:      { label: "No municipalities", paper: ["#eceae2", "#8a8779"], dark: ["#1c1d1a", "#5c5a51"] },
+};
+
+const MEASURES = [
+  { city: "Tucson", st: "Arizona", title: "Heat & Shade Ordinance — canopy minimums on transit corridors", topic: "Climate adaptation", stage: "Decided", meta: "Assembly of 48", authority: "Constitutional guarantee; 15% of qualified electors", result: "Passed 61.2%", resultShort: "Passed 61.2%", date: "Mar 2026", tone: "win" },
+  { city: "Boulder", st: "Colorado", title: "Missing Middle Housing — by-right duplex and fourplex conversion", topic: "Housing", stage: "Decided", meta: "Assembly of 60", authority: "Home rule charter; 5% of registered electors", result: "Passed 58.4%", resultShort: "Passed 58.4%", date: "Nov 2025", tone: "win" },
+  { city: "Springfield", st: "Missouri", title: "Public Utility Rate Review Board", topic: "Utilities", stage: "Decided", meta: "Assembly of 42", authority: "Charter city; 10% of registered voters", result: "Failed 47.1%", resultShort: "Failed 47.1%", date: "Nov 2025", tone: "loss" },
+  { city: "Eugene", st: "Oregon", title: "Wildfire Resilience Fund — dedicated levy and defensible-space program", topic: "Public safety", stage: "On ballot", meta: "Measure 20-361", authority: "Constitution mandates municipal I&R; 15%", result: "Nov 3, 2026", resultShort: "Nov 3", date: "Certified May 2026", tone: "live" },
+  { city: "Sioux Falls", st: "South Dakota", title: "Charter amendment: standing Citizens' Assembly, funded at 0.02% of budget", topic: "Democratic reform", stage: "On ballot", meta: "Charter amendment", authority: "Constitutional home rule; 5% of registered voters", result: "Nov 3, 2026", resultShort: "Nov 3", date: "Certified Jun 2026", tone: "live" },
+  { city: "Charleston", st: "South Carolina", title: "Flood Mitigation Bond — assembly-ranked project list", topic: "Infrastructure", stage: "On ballot", meta: "$180M bond", authority: "Home rule; 15% of registered voters", result: "Nov 3, 2026", resultShort: "Nov 3", date: "Certified Jul 2026", tone: "live" },
+  { city: "Dayton", st: "Ohio", title: "Charter amendment: authorize and fund citizen assemblies for land-use policy", topic: "Democratic reform", stage: "Certified", meta: "9,140 signatures", authority: "Self-executing home rule; 10% of gubernatorial vote", result: "Awaiting cert.", resultShort: "Verified", date: "Filed Aug 2026", tone: "neutral" },
+  { city: "Wichita", st: "Kansas", title: "Water Reuse Standards for new industrial permits", topic: "Water", stage: "Certified", meta: "14,600 signatures", authority: "Self-executing home rule; 25% (1st class)", result: "Nov 3, 2026", resultShort: "Verified", date: "Filed Jul 2026", tone: "neutral" },
+  { city: "Missoula", st: "Montana", title: "Short-Term Rental Cap and licensing tiers", topic: "Housing", stage: "Signature drive", meta: "71% of 4,200", authority: "Self-executing home rule; 15%", result: "Due Sep 12", resultShort: "Due Sep 12", date: "Drive closes Sep 2026", tone: "neutral" },
+  { city: "Fayetteville", st: "Arkansas", title: "Transit Frequency Levy — 15-minute core network", topic: "Transit", stage: "Signature drive", meta: "38% of 3,100", authority: "Home rule by statute; 15% of legal voters", result: "Due Oct 1", resultShort: "Due Oct 1", date: "Drive closes Oct 2026", tone: "neutral" },
+  { city: "Lincoln", st: "Nebraska", title: "Neighborhood Stormwater Fee reform", topic: "Infrastructure", stage: "Drafting", meta: "Deliberation wk 4/8", authority: "Constitutional home rule; 15%", result: "Draft Oct 2026", resultShort: "Report Oct", date: "Report due Oct 2026", tone: "neutral" },
+  { city: "Reno", st: "Nevada", title: "Groundwater Metering and drought triggers", topic: "Water", stage: "Drafting", meta: "Panel seated Jul", authority: "Home rule w/ enabling legislation; 15%", result: "Draft Dec 2026", resultShort: "Report Dec", date: "Report due Dec 2026", tone: "neutral" },
+];
+
+const STAGES = ["Drafting", "Signature drive", "Certified", "On ballot", "Decided"];
+
+class Component extends DCLogic {
+  state = { filter: "All" };
+
+  renderVals() {
+    const accent = this.props.accent ?? "#eb6834";
+    const filter = this.state.filter;
+    const all = MEASURES;
+    const shown = filter === "All" ? all : all.filter(m => m.topic === filter);
+
+    const tiles = STATES.map(([ab, r, c, cls]) => {
+      const k = CLASSES[cls];
+      const base = { gridRow: r + 1, gridColumn: c + 1, aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'IBM Plex Mono', monospace", fontSize: "10.5px", fontWeight: 500, letterSpacing: "0.02em" };
+      return {
+        ab, title: ab + " — " + k.label,
+        paperStyle: { ...base, background: k.paper[0], color: k.paper[1] },
+        darkStyle: { ...base, background: k.dark[0], color: k.dark[1] },
+      };
+    });
+
+    const legend = Object.keys(CLASSES).map(key => {
+      const k = CLASSES[key];
+      const sw = { width: "11px", height: "11px", display: "inline-block", flex: "none" };
+      return { label: k.label, n: STATES.filter(s => s[3] === key).length,
+        swatchPaper: { ...sw, background: k.paper[0] }, swatchDark: { ...sw, background: k.dark[0] } };
+    });
+
+    const toneColor = t => t === "win" ? "#7fc9a2" : t === "loss" ? "#e58f78" : t === "live" ? accent : "#8d8b7f";
+    const pipeline = STAGES.map(stage => {
+      const items = shown.filter(m => m.stage === stage).map(m => ({
+        ...m,
+        cardStyle: { display: "block", padding: "14px", border: "1px solid #2a2b27", background: m.tone === "live" ? "#191a15" : "#141510", textDecoration: "none" },
+        resultStyle: { color: toneColor(m.tone), whiteSpace: "nowrap" },
+      }));
+      return { stage, count: items.length, items };
+    });
+
+    const topics = ["All", "Housing", "Democratic reform", "Water", "Infrastructure"];
+    const filters = topics.map(t => ({
+      label: t, onClick: () => this.setState({ filter: t }),
+      style: { fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", padding: "6px 12px", cursor: "pointer",
+        border: "1px solid " + (t === filter ? accent : "#3b3c37"), background: t === filter ? accent : "transparent", color: t === filter ? "#0f100e" : "#a5a397" },
+    }));
+
+    return {
+      accent, tiles, legend, filters, pipeline,
+      measures: shown,
+      stats: [
+        { n: "14", label: "Assemblies convened" },
+        { n: "9", label: "Measures on a 2026 ballot" },
+        { n: "2", label: "Ordinances passed by referendum" },
+        { n: "1,412", label: "Residents seated by lot" },
+      ],
+      assemblies: [
+        { topic: "Groundwater metering and drought triggers", where: "Reno, Nevada", panel: "44 seated", phase: "Deliberating" },
+        { topic: "Neighborhood stormwater fee reform", where: "Lincoln, Nebraska", panel: "36 seated", phase: "Week 4 of 8" },
+        { topic: "Zoning for small-scale manufacturing", where: "Tulsa, Oklahoma", panel: "50 invited", phase: "Sortition open" },
+        { topic: "Municipal broadband build-out", where: "Madison, Wisconsin", panel: "48 invited", phase: "Sortition open" },
+        { topic: "Emergency shelter siting standards", where: "Bellingham, Washington", panel: "40 seated", phase: "Evidence phase" },
+      ],
+      rfps: [
+        { title: "Any topic — open call, home-rule cities", where: "18 broad-authority states", due: "Sep 30", budget: "$120k per assembly" },
+        { title: "Water allocation and reuse", where: "Southwest and High Plains", due: "Oct 15", budget: "$150k per assembly" },
+        { title: "Assembly authorization charter amendments", where: "Charter-city partners", due: "Nov 1", budget: "$80k + legal" },
+        { title: "Land use and housing supply", where: "Nationwide", due: "Rolling", budget: "$120k per assembly" },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>
