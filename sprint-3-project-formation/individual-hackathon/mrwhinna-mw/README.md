@@ -1,4 +1,4 @@
-# Commons
+# Community Commons
 
 A civic-engagement game: browse federal rules that are open for public comment, write a three-sentence comment from a template, file it on regulations.gov — and every comment you file raises a building in a town you can walk around. Each building keeps a timeline of what happened to the rule you commented on.
 
