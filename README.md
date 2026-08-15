@@ -18,8 +18,11 @@ Sprint 2 has four assignment subfolders:
 - [`individual-frame-hypotheses/`](./sprint-2-problem-and-frame-discovery/individual-frame-hypotheses)
 - [`individual-presentation/`](./sprint-2-problem-and-frame-discovery/individual-presentation)
 
-Sprint 3's assignment subfolders aren't defined yet; add them under
-`sprint-3-project-formation/` following the same pattern as Sprint 2 once they're known.
+Sprint 3 has one assignment subfolder so far:
+- [`individual-hackathon/`](./sprint-3-project-formation/individual-hackathon)
+
+Add any further Sprint 3 subfolders under `sprint-3-project-formation/` following the
+same pattern as Sprint 2 once they're known.
 
 ## GitHub Pages
 
