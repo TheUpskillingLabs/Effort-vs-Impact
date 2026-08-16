@@ -18,6 +18,7 @@ No Google OAuth, Takeout upload, AI model, or government submission is connected
 ## Run locally
 
 ```bash
+cd code
 pnpm install
 pnpm dev
 ```
@@ -31,6 +32,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Verify
 
 ```bash
+cd code
 pnpm test
 pnpm typecheck
 pnpm lint
