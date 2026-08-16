@@ -766,17 +766,45 @@ h3 {
   max-width: 560px;
 }
 
+.need-card-sent {
+  align-items: center;
+  grid-template-rows: repeat(3, auto);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  row-gap: 0.65rem;
+}
+
+.need-card-sent .need-card-copy {
+  display: contents;
+}
+
+.need-card-sent .status-row {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.need-card-sent .need-card-copy h3 {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0;
+}
+
+.need-card-sent .need-card-copy > p:last-child {
+  grid-column: 1;
+  grid-row: 3;
+  margin: 0;
+}
+
+.need-card-sent .need-card-action {
+  align-items: flex-end;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  padding: 0;
+}
+
 .status-row {
   align-items: center;
   display: flex;
-  gap: 0.85rem;
-}
-
-.status-row > span {
-  border-left: 1px solid var(--rule);
-  color: var(--quiet);
-  font-size: 0.68rem;
-  padding-left: 0.85rem;
 }
 
 .subscribed-state {
@@ -1192,6 +1220,19 @@ h3 {
 
   .need-card {
     grid-template-columns: 1fr;
+  }
+
+  .need-card-sent {
+    grid-template-rows: repeat(4, auto);
+  }
+
+  .need-card-sent .need-card-action {
+    align-items: flex-start;
+    border-top: 0;
+    grid-column: 1;
+    grid-row: 4;
+    justify-self: start;
+    margin-top: 0.25rem;
   }
 
   .need-card-action {

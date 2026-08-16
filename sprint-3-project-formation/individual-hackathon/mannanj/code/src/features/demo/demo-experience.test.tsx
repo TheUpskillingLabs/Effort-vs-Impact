@@ -168,7 +168,7 @@ describe("DemoExperience", () => {
     await user.click(
       screen.getByRole("button", { name: /send to district office/i }),
     );
-    expect(screen.getByText(/^sent$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^sent today$/i)).toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", { name: /subscribe to updates/i }),

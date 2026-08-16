@@ -402,12 +402,11 @@ function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
   const actionLabel = isDiscovered ? "Review" : "Review and Send";
 
   return (
-    <article className="need-card">
+    <article className={`need-card${isSent ? " need-card-sent" : ""}`}>
       <div className="need-card-copy">
         {isSent ? (
           <div className="status-row">
-            <p className="status-label">Sent</p>
-            {need.sentAt ? <span>{need.sentAt}</span> : null}
+            <p className="status-label">{need.sentAt ?? "Sent"}</p>
           </div>
         ) : null}
         <h3>{need.title}</h3>
