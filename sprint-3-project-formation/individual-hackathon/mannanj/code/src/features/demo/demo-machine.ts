@@ -1,6 +1,8 @@
 export type DemoStep = "welcome" | "analyzing" | "home" | "review" | "share";
 
 export type NeedStatus = "discovered" | "confirmed" | "sent" | "dismissed";
+export type ContactField = "name" | "email" | "address";
+export type IncludedContact = Record<ContactField, boolean>;
 
 export type CivicNeed = {
   id: "rose-hill-sign";
@@ -11,6 +13,7 @@ export type CivicNeed = {
   category: string;
   destination: string;
   notes: string;
+  includedContact: IncludedContact;
   status: NeedStatus;
   subscribed: boolean;
   sentAt: string | null;
@@ -28,6 +31,11 @@ export type DemoAction =
   | { type: "openNeed" }
   | { type: "setDetails"; summary: string; location: string; outcome: string }
   | { type: "setNotes"; notes: string }
+  | {
+      type: "setIncludedContact";
+      field: ContactField;
+      included: boolean;
+    }
   | { type: "confirmNeed" }
   | { type: "openShare" }
   | { type: "sendNeed"; sentAt: string }
@@ -51,6 +59,11 @@ export const initialDemoState: DemoState = {
     category: "Neighborhood maintenance",
     destination: "Franconia District constituent services",
     notes: "",
+    includedContact: {
+      name: false,
+      email: false,
+      address: false,
+    },
     status: "discovered",
     subscribed: false,
     sentAt: null,
@@ -77,6 +90,17 @@ export function demoReducer(state: DemoState, action: DemoAction): DemoState {
       };
     case "setNotes":
       return { ...state, need: { ...state.need, notes: action.notes } };
+    case "setIncludedContact":
+      return {
+        ...state,
+        need: {
+          ...state.need,
+          includedContact: {
+            ...(state.need.includedContact ?? initialDemoState.need.includedContact),
+            [action.field]: action.included,
+          },
+        },
+      };
     case "confirmNeed":
       return {
         ...state,
@@ -110,13 +134,33 @@ export function demoReducer(state: DemoState, action: DemoAction): DemoState {
         need: { ...state.need, status: "discovered" },
       };
     case "hydrate":
-      return action.state;
+      return {
+        ...action.state,
+        need: {
+          ...initialDemoState.need,
+          ...action.state.need,
+          includedContact: {
+            ...initialDemoState.need.includedContact,
+            ...action.state.need.includedContact,
+          },
+        },
+      };
     case "reset":
       return initialDemoState;
   }
 }
 
 export function buildShareableNeed(need: CivicNeed) {
+  const includedContact =
+    need.includedContact ?? initialDemoState.need.includedContact;
+  const contact = {
+    ...(includedContact.name ? { name: initialDemoState.profileName } : {}),
+    ...(includedContact.email ? { email: "mannan@example.com" } : {}),
+    ...(includedContact.address
+      ? { address: "Rose Hill, Alexandria, VA 22310" }
+      : {}),
+  };
+
   return {
     title: need.title,
     summary: need.summary,
@@ -124,6 +168,6 @@ export function buildShareableNeed(need: CivicNeed) {
     outcome: need.outcome,
     category: need.category,
     destination: need.destination,
-    constituent: initialDemoState.profileName,
+    contact,
   };
 }

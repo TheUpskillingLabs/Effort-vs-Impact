@@ -2,9 +2,9 @@
 
 ## Drifting shape cluster
 
-Use a small group of circles, squares, and diamonds that move on separate paths. The shapes should feel like the system is sorting signals, with restrained motion and no spinner metaphor.
+Use a small group of a circle, square, and triangle that move on separate paths. Their black outlines remain fixed while their fills rotate through plain green, red, and blue from different starting points. The shapes should feel like the system is sorting signals, with restrained motion and no spinner metaphor.
 
-This is the selected treatment for the current MVP.
+When scanning completes, smoothly settle the live shapes into one repeatable final cluster and freeze their current colors. A restrained gold shimmer can remain around the cluster. This is the selected treatment for the current MVP.
 
 ## Morphing central shape
 

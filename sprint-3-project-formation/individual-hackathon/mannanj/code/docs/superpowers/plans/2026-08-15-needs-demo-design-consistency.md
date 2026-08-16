@@ -20,11 +20,11 @@
 
 Record welcome, analyzing, discovered, review, confirmed, share, sent, dismissed, subscription, persistence, and reset behavior in the flow contract.
 
-- [ ] **Step 2: Add canonical-label regression assertions**
+- [x] **Step 2: Add canonical-label regression assertions**
 
-Assert `Next action`, `Latest updates`, `My needs`, `Needs discovered`, `Back`, `Discard`, and `Confirm`, and assert removed helper labels remain absent.
+Assert `Latest updates`, `Verified needs`, `Unverified needs`, `Back`, `Discard`, and `Verify`, and assert removed helper labels remain absent.
 
-- [ ] **Step 3: Run the focused test and confirm it passes**
+- [x] **Step 3: Run the focused test and confirm it passes**
 
 Run: `pnpm test -- --run src/features/demo/demo-experience.test.tsx`
 
@@ -35,7 +35,7 @@ Expected: all demo experience tests pass.
 **Files:**
 - Modify: `src/app/globals.css`
 
-- [ ] **Step 1: Add shared layout tokens**
+- [x] **Step 1: Add shared layout tokens**
 
 Add a restrained spacing scale, one card border, and one card radius under `:root`:
 
@@ -50,11 +50,11 @@ Add a restrained spacing scale, one card border, and one card radius under `:roo
 --card-radius: 8px;
 ```
 
-- [ ] **Step 2: Replace isolated card radius and border values**
+- [x] **Step 2: Replace isolated card radius and border values**
 
 Use `var(--card-border)` and `var(--card-radius)` for summary cards, the discovered card, and the My needs empty state. Keep cards white; use color only for semantic markers such as the yellow review exclamation, red discard ×, and green confirm check.
 
-- [ ] **Step 3: Normalize type roles**
+- [x] **Step 3: Normalize type roles**
 
 Keep one uppercase micro-label size, one section-heading size, one card-title size, one body size, and one action size. Delete selectors for removed copy and labels.
 
@@ -65,23 +65,23 @@ Keep one uppercase micro-label size, one section-heading size, one card-title si
 - Modify: `src/app/globals.css`
 - Test: `src/features/demo/demo-experience.test.tsx`
 
-- [ ] **Step 1: Make loading completion geometrically stable**
+- [x] **Step 1: Make loading completion geometrically stable**
 
 Keep shapes left, result rows center, and CTA right. When complete, stop shape motion and align the CTA top and bottom with the three-row list.
 
-- [ ] **Step 2: Make summary cards content-sized and balanced**
+- [x] **Step 2: Make summary cards content-sized and balanced**
 
 Use three rows in Next action with one equal gap: label, title, action. Remove explanatory copy. Use identical padding, border, and radius on both summary cards without forcing unnecessary height.
 
-- [ ] **Step 3: Normalize section rhythm**
+- [x] **Step 3: Normalize section rhythm**
 
-Use one heading-to-card gap for My needs and Needs discovered, and one section-to-section gap. Keep “A need you confirm will stay here.” at its existing type size on the left.
+Use one heading-to-card gap for Verified needs and Unverified needs, and one section-to-section gap. Keep each empty-state sentence at the same small type size on the left.
 
-- [ ] **Step 4: Normalize the discovered card**
+- [x] **Step 4: Normalize the discovered card**
 
 Vertically center title, description, and Review button. Use the shared white card and faint outline, match left/right inset, preserve the tapered yellow exclamation, and keep equal gaps inside the button.
 
-- [ ] **Step 5: Run focused tests**
+- [x] **Step 5: Run focused tests**
 
 Run: `pnpm test -- --run src/features/demo/demo-experience.test.tsx`
 
@@ -94,23 +94,23 @@ Expected: pass.
 - Modify: `src/app/globals.css`
 - Test: `src/features/demo/demo-experience.test.tsx`
 
-- [ ] **Step 1: Keep one review hierarchy**
+- [x] **Step 1: Keep one review hierarchy**
 
 Render continuous-underlined `← Back`, the need title, the detail card, optional notes, then one final action row. Do not restore progress metadata or explanatory headings.
 
-- [ ] **Step 2: Normalize editable rows**
+- [x] **Step 2: Normalize editable rows**
 
 Keep the value and pencil as one pointer target, enlarge the pencil consistently, preserve inline autofocus editing, and maintain equal row padding.
 
-- [ ] **Step 3: Normalize final actions**
+- [x] **Step 3: Normalize final actions**
 
-Place plain red `× Discard` left and green-check `Confirm` right. Avoid extra circles, arrows, or labels.
+Place plain red `× Discard` left and green-check `Verify` right. Avoid extra circles, arrows, or labels.
 
-- [ ] **Step 4: Confirm the share document uses the same type and spacing roles**
+- [x] **Step 4: Confirm the share document uses the same type and spacing roles**
 
 Retain only office-facing information and the mock-send action; keep notes out of the document.
 
-- [ ] **Step 5: Run focused tests**
+- [x] **Step 5: Run focused tests**
 
 Run: `pnpm test -- --run src/features/demo/demo-experience.test.tsx`
 
@@ -123,13 +123,13 @@ Expected: pass.
 - Modify: `/Users/manblack/Documents/mannan20/.worktrees/needs-demo/src/app/needs/demo-experience.tsx`
 - Modify: `/Users/manblack/Documents/mannan20/.worktrees/needs-demo/src/app/needs/needs.css`
 
-- [ ] **Step 1: Run repository gates**
+- [x] **Step 1: Run repository gates**
 
 Run: `pnpm test && pnpm typecheck && pnpm lint && pnpm build`
 
 Expected: all commands exit 0.
 
-- [ ] **Step 2: Verify desktop and mobile flow**
+- [x] **Step 2: Verify desktop and mobile flow**
 
 Run the browser flow at 1440×1000 and 390×844. Assert the loading CTA aligns with the result list, cards use identical borders/radii, the profile stays right-aligned, inline edit uses a pointer, and the complete confirm/send/subscribe/reset path succeeds.
 
@@ -146,4 +146,3 @@ Expected: Cloudflare returns a new worker version and `https://mannan.is/needs` 
 - [ ] **Step 5: Update both pull requests**
 
 Commit and push the scoped `mannan20` files to PR #4 and the class-submission component, stylesheet, test, and documentation to PR #13.
-

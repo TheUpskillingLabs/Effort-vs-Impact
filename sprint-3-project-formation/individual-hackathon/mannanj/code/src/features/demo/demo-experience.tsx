@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import {
-  buildShareableNeed,
   demoReducer,
   initialDemoState,
   type CivicNeed,
@@ -91,6 +90,7 @@ function WelcomeScreen({ dispatch }: ScreenProps) {
               G
             </span>
             Continue with Google
+            <span className="demo-only-label">(Demo only)</span>
           </button>
         </div>
       </section>
@@ -100,7 +100,57 @@ function WelcomeScreen({ dispatch }: ScreenProps) {
 
 function AnalysisScreen({ dispatch }: ScreenProps) {
   const [complete, setComplete] = useState(false);
-  const finishSequence = useCallback(() => setComplete(true), []);
+  const shapeClusterRef = useRef<HTMLDivElement>(null);
+  const sequenceStartedRef = useRef(false);
+  const finishSequence = useCallback(() => {
+    if (sequenceStartedRef.current) return;
+    sequenceStartedRef.current = true;
+
+    const shapes = Array.from(
+      shapeClusterRef.current?.querySelectorAll<HTMLElement>(".analysis-shape") ?? [],
+    );
+    const stableTransforms = [
+      "translate(10px, 8px) scale(0.82)",
+      "translate(-6px, 22px)",
+      "translate(-18px, -8px)",
+    ];
+    const reduceMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const animations: Animation[] = [];
+
+    shapes.forEach((shape, index) => {
+      const computedStyle = window.getComputedStyle(shape);
+      const currentTransform = computedStyle.transform;
+      shape.style.color = computedStyle.color;
+      shape.style.transform = stableTransforms[index];
+
+      if (typeof shape.animate === "function") {
+        animations.push(
+          shape.animate(
+            [
+              { transform: currentTransform },
+              { transform: stableTransforms[index] },
+            ],
+            {
+              duration: reduceMotion ? 1 : 680,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "forwards",
+            },
+          ),
+        );
+      }
+    });
+
+    if (animations.length === 0) {
+      setComplete(true);
+      return;
+    }
+
+    void Promise.all(animations.map((animation) => animation.finished)).then(() => {
+      setComplete(true);
+    });
+  }, []);
 
   return (
     <main className="analysis-screen view-enter">
@@ -108,13 +158,24 @@ function AnalysisScreen({ dispatch }: ScreenProps) {
         className={`analysis-panel${complete ? " is-complete" : ""}`}
         aria-labelledby="analysis-title"
       >
-        <div className="analysis-shapes" aria-hidden="true">
+        <div ref={shapeClusterRef} className="analysis-shapes" aria-hidden="true">
           <span className="analysis-shape analysis-shape-circle" />
           <span className="analysis-shape analysis-shape-square" />
-          <span className="analysis-shape analysis-shape-diamond" />
+          <span className="analysis-shape analysis-shape-triangle" />
         </div>
         <div className="analysis-content">
-          <h1 id="analysis-title">Scanning for needs</h1>
+          <h1 id="analysis-title">
+            {complete ? (
+              <>
+                <span className="analysis-success-mark" aria-hidden="true">
+                  ✓
+                </span>
+                Scan complete
+              </>
+            ) : (
+              "Scanning for needs"
+            )}
+          </h1>
           <ul className="analysis-list" aria-label="Analysis progress">
             {ANALYSIS_STEPS.map((step, index) => (
               <ScrambleLine
@@ -302,46 +363,30 @@ function HomeScreen({ state, dispatch }: SignedInScreenProps) {
           </div>
         </section>
 
-        <section className="needs-section" aria-labelledby="my-needs-title">
+        <section className="needs-section" aria-labelledby="verified-needs-title">
           <div className="section-heading">
-            <h2 id="my-needs-title">My needs</h2>
+            <h2 id="verified-needs-title">Verified needs</h2>
           </div>
 
           {isMine ? (
             <NeedCard need={need} dispatch={dispatch} />
           ) : (
             <div className="empty-state">
-              <span>A need you confirm will stay here.</span>
+              <span>A need you verify will stay here.</span>
             </div>
           )}
         </section>
 
-        <section className="needs-section" aria-labelledby="discovered-title">
+        <section className="needs-section" aria-labelledby="unverified-needs-title">
           <div className="section-heading">
-            <h2 id="discovered-title">Needs discovered</h2>
+            <h2 id="unverified-needs-title">Unverified needs</h2>
           </div>
 
           {need.status === "discovered" ? (
-            <article className="need-card need-card-discovered">
-              <div className="need-card-copy">
-                <h3>{need.title}</h3>
-                <p>{need.summary}</p>
-              </div>
-              <div className="need-card-action">
-                <button
-                  className="button button-primary"
-                  type="button"
-                  aria-label={`Review ${need.title}`}
-                  onClick={() => dispatch({ type: "openNeed" })}
-                >
-                  Review
-                  <span aria-hidden="true">→</span>
-                </button>
-              </div>
-            </article>
+            <NeedCard need={need} dispatch={dispatch} />
           ) : (
             <div className="empty-state empty-state-compact">
-              <p>You are all caught up.</p>
+              <span>You are all caught up.</span>
             </div>
           )}
         </section>
@@ -352,7 +397,9 @@ function HomeScreen({ state, dispatch }: SignedInScreenProps) {
 }
 
 function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
+  const isDiscovered = need.status === "discovered";
   const isSent = need.status === "sent";
+  const actionLabel = isDiscovered ? "Review" : "Review and send";
 
   return (
     <article className="need-card">
@@ -364,7 +411,7 @@ function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
           </div>
         ) : null}
         <h3>{need.title}</h3>
-        <p>{need.outcome}</p>
+        <p>{need.summary}</p>
       </div>
       <div className="need-card-action">
         {isSent ? (
@@ -386,9 +433,12 @@ function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
           <button
             className="button button-primary"
             type="button"
-            onClick={() => dispatch({ type: "openShare" })}
+            aria-label={`${actionLabel} ${need.title}`}
+            onClick={() =>
+              dispatch({ type: isDiscovered ? "openNeed" : "openShare" })
+            }
           >
-            Review and send
+            {actionLabel}
             <span aria-hidden="true">→</span>
           </button>
         )}
@@ -398,98 +448,123 @@ function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
 }
 
 function ReviewScreen({ state, dispatch }: SignedInScreenProps) {
-  const { need } = state;
-  const isValid = Boolean(
-    need.summary.trim() && need.location.trim() && need.outcome.trim(),
-  );
-
   return (
     <div className="app-frame view-enter">
       <AppHeader
         profileName={state.profileName}
         onReset={() => dispatch({ type: "reset" })}
       />
-      <main className="flow-page">
-        <section className="flow-heading" aria-labelledby="need-title">
-          <button
-            className="back-button flow-back"
-            type="button"
-            aria-label="Back"
-            onClick={() => dispatch({ type: "goHome" })}
-          >
-            ← Back
-          </button>
-          <h1 id="need-title">{need.title}</h1>
-        </section>
+      <NeedEditor state={state} dispatch={dispatch} mode="verify" />
+    </div>
+  );
+}
 
-        <section className="prepared-card" aria-label="Need details">
-          <dl className="need-summary">
-            <EditableSummaryRow
-              label="What is happening"
-              value={need.summary}
-              multiline
-              onChange={(summary) =>
-                dispatch({
-                  type: "setDetails",
-                  summary,
-                  location: need.location,
-                  outcome: need.outcome,
-                })
-              }
-            />
-            <EditableSummaryRow
-              label="Where"
-              value={need.location}
-              onChange={(location) =>
-                dispatch({
-                  type: "setDetails",
-                  summary: need.summary,
-                  location,
-                  outcome: need.outcome,
-                })
-              }
-            />
-            <EditableSummaryRow
-              label="What you need"
-              value={need.outcome}
-              multiline
-              onChange={(outcome) =>
-                dispatch({
-                  type: "setDetails",
-                  summary: need.summary,
-                  location: need.location,
-                  outcome,
-                })
-              }
-            />
-            <SummaryRow label="Category" value={need.category} />
-            <SummaryRow label="Best destination" value={need.destination} />
-          </dl>
-        </section>
+function ShareScreen({ state, dispatch }: SignedInScreenProps) {
+  return (
+    <div className="app-frame view-enter">
+      <AppHeader
+        profileName={state.profileName}
+        onReset={() => dispatch({ type: "reset" })}
+      />
+      <NeedEditor state={state} dispatch={dispatch} mode="send" />
+    </div>
+  );
+}
 
-        <section className="notes-panel" aria-labelledby="notes-title">
-          <div>
-            <h2 id="notes-title">Notes</h2>
-            <span>Optional</span>
-          </div>
-          <textarea
-            id="notes"
-            aria-label="Notes (optional)"
-            placeholder="Anything you want to remember about this need…"
-            value={need.notes}
-            onChange={(event) =>
-              dispatch({ type: "setNotes", notes: event.target.value })
+function NeedEditor({
+  state,
+  dispatch,
+  mode,
+}: SignedInScreenProps & { mode: "verify" | "send" }) {
+  const { need } = state;
+  const isValid = Boolean(
+    need.summary.trim() && need.location.trim() && need.outcome.trim(),
+  );
+
+  return (
+    <main className="flow-page">
+      <section className="flow-heading" aria-labelledby="need-title">
+        <button
+          className="back-button flow-back"
+          type="button"
+          aria-label="Back"
+          onClick={() => dispatch({ type: "goHome" })}
+        >
+          ← Back
+        </button>
+        <h1 id="need-title">{need.title}</h1>
+      </section>
+
+      <section className="prepared-card" aria-label="Need details">
+        <dl className="need-summary">
+          <EditableSummaryRow
+            label="What is happening"
+            value={need.summary}
+            multiline
+            onChange={(summary) =>
+              dispatch({
+                type: "setDetails",
+                summary,
+                location: need.location,
+                outcome: need.outcome,
+              })
             }
           />
-        </section>
+          <EditableSummaryRow
+            label="Where"
+            value={need.location}
+            onChange={(location) =>
+              dispatch({
+                type: "setDetails",
+                summary: need.summary,
+                location,
+                outcome: need.outcome,
+              })
+            }
+          />
+          <EditableSummaryRow
+            label="What you need"
+            value={need.outcome}
+            multiline
+            onChange={(outcome) =>
+              dispatch({
+                type: "setDetails",
+                summary: need.summary,
+                location: need.location,
+                outcome,
+              })
+            }
+          />
+          <SummaryRow label="Category" value={need.category} />
+          <SummaryRow label="Best destination" value={need.destination} />
+        </dl>
+        <ContactOptions need={need} dispatch={dispatch} />
+      </section>
 
-        {!isValid ? (
-          <p className="validation-message" role="alert">
-            Restore the missing prepared detail before confirming.
-          </p>
-        ) : null}
+      <section className="notes-panel" aria-labelledby="notes-title">
+        <div>
+          <h2 id="notes-title">Notes</h2>
+          <span>(Optional)</span>
+        </div>
+        <textarea
+          id="notes"
+          aria-label="Notes (optional)"
+          placeholder="Anything you want to remember about this need…"
+          value={need.notes}
+          onChange={(event) =>
+            dispatch({ type: "setNotes", notes: event.target.value })
+          }
+        />
+      </section>
 
-        <div className="flow-actions">
+      {!isValid ? (
+        <p className="validation-message" role="alert">
+          Restore the missing prepared detail before continuing.
+        </p>
+      ) : null}
+
+      <div className={`flow-actions${mode === "send" ? " flow-actions-send" : ""}`}>
+        {mode === "verify" ? (
           <div className="dismiss-action">
             <button
               className="dismiss-mark"
@@ -507,72 +582,63 @@ function ReviewScreen({ state, dispatch }: SignedInScreenProps) {
               Discard
             </button>
           </div>
-          <button
-            className="button button-primary confirm-action"
-            type="button"
-            disabled={!isValid}
-            onClick={() => dispatch({ type: "confirmNeed" })}
-          >
+        ) : null}
+        <button
+          className="button button-primary confirm-action"
+          type="button"
+          disabled={!isValid}
+          onClick={() =>
+            mode === "verify"
+              ? dispatch({ type: "confirmNeed" })
+              : dispatch({ type: "sendNeed", sentAt: "Sent today" })
+          }
+        >
+          {mode === "verify" ? (
             <span className="confirm-mark" aria-hidden="true">
               ✓
             </span>
-            Confirm
-          </button>
-        </div>
-      </main>
-    </div>
+          ) : null}
+          {mode === "verify" ? "Verify" : "Send to district office"}
+          {mode === "send" ? <span aria-hidden="true">→</span> : null}
+        </button>
+      </div>
+    </main>
   );
 }
 
-function ShareScreen({ state, dispatch }: SignedInScreenProps) {
-  const shared = buildShareableNeed(state.need);
-
+function ContactOptions({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
   return (
-    <div className="app-frame view-enter">
-      <AppHeader
-        profileName={state.profileName}
-        backLabel="Back to my needs"
-        onBack={() => dispatch({ type: "goHome" })}
-        onReset={() => dispatch({ type: "reset" })}
-      />
-      <main className="flow-page share-page">
-        <div className="flow-progress" aria-label="Send progress">
-          <span>Share</span>
-          <span>Final review</span>
-        </div>
-        <article className="share-document">
-          <header>
-            <p>Constituent need</p>
-            <span>Confirmed by {shared.constituent}</span>
-          </header>
-          <h2>{shared.title}</h2>
-          <dl className="need-summary share-summary">
-            <SummaryRow label="Need" value={shared.summary} />
-            <SummaryRow label="Location" value={shared.location} />
-            <SummaryRow label="Requested outcome" value={shared.outcome} />
-            <SummaryRow label="Category" value={shared.category} />
-          </dl>
-          <footer>
-            <span>To</span>
-            <strong>{shared.destination}</strong>
-          </footer>
-        </article>
-
-        <div className="send-block">
-          <p>Sending approves sharing the request shown above.</p>
-          <button
-            className="button button-primary button-send"
-            type="button"
-            onClick={() =>
-              dispatch({ type: "sendNeed", sentAt: "Sent today" })
-            }
-          >
-            Send to district office
-            <span aria-hidden="true">→</span>
-          </button>
-        </div>
-      </main>
-    </div>
+    <fieldset
+      className="contact-options"
+      aria-label="Information to include with this need"
+    >
+      <div className="contact-checkboxes">
+        <span className="contact-prefix">Include:</span>
+        {(
+          [
+            ["name", "Name"],
+            ["email", "Email"],
+            ["address", "Address"],
+          ] as const
+        ).map(([field, label]) => (
+          <label key={field}>
+            <input
+              type="checkbox"
+              aria-label={`Include your ${field}`}
+              checked={need.includedContact?.[field] ?? false}
+              onChange={(event) =>
+                dispatch({
+                  type: "setIncludedContact",
+                  field,
+                  included: event.target.checked,
+                })
+              }
+            />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }
 
@@ -652,25 +718,15 @@ function EditableSummaryRow({
 
 function AppHeader({
   profileName,
-  backLabel,
-  onBack,
   onReset,
 }: {
   profileName: string;
-  backLabel?: string;
-  onBack?: () => void;
   onReset: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="app-header">
-      {onBack ? (
-        <button className="back-button" type="button" onClick={onBack}>
-          <span aria-hidden="true">←</span>
-          {backLabel}
-        </button>
-      ) : null}
       <div className="profile-menu-shell">
         <button
           className="profile-chip"

@@ -39,7 +39,7 @@ describe("DemoExperience", () => {
       ),
     );
     expect(
-      screen.getByRole("heading", { name: /needs discovered/i }),
+      screen.getByRole("heading", { name: /unverified needs/i }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: /a clearer signal/i }),
@@ -80,7 +80,7 @@ describe("DemoExperience", () => {
     expect(
       screen.getByRole("button", { name: /dismiss this need/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^confirm$/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^verify$/i })).toBeInTheDocument();
     expect(screen.queryByText("Possible need", { exact: true })).not.toBeInTheDocument();
     expect(
       screen.queryByText(/we prepared the useful details/i),
@@ -88,6 +88,15 @@ describe("DemoExperience", () => {
     expect(screen.queryByText("Prepared for you", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByText("Enough to act on", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByText("Make a correction", { exact: true })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: /include your name/i }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: /include your email/i }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: /include your address/i }),
+    ).not.toBeChecked();
 
     await user.click(
       screen.getByRole("button", { name: /edit what is happening/i }),
@@ -97,12 +106,28 @@ describe("DemoExperience", () => {
     ).toHaveValue(
       "The Rose Hill neighborhood sign is damaged and difficult to read from the road.",
     );
+    await user.clear(
+      screen.getByRole("textbox", { name: "What is happening" }),
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: "What is happening" }),
+      "The Rose Hill sign is damaged.",
+    );
     await user.type(
       screen.getByRole("textbox", { name: "Notes (optional)" }),
       "Check it on the evening walk.",
     );
     await user.click(
-      screen.getByRole("button", { name: /^confirm$/i }),
+      screen.getByRole("checkbox", { name: /include your name/i }),
+    );
+    await user.click(
+      screen.getByRole("checkbox", { name: /include your email/i }),
+    );
+    await user.click(
+      screen.getByRole("checkbox", { name: /include your address/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /^verify$/i }),
     );
     expect(screen.queryByText(/^ready to send$/i)).not.toBeInTheDocument();
     expect(
@@ -113,8 +138,20 @@ describe("DemoExperience", () => {
       screen.getByRole("button", { name: /review and send/i }),
     );
     expect(
-      screen.queryByText("Check it on the evening walk."),
-    ).not.toBeInTheDocument();
+      screen.getByRole("textbox", { name: "Notes (optional)" }),
+    ).toHaveValue("Check it on the evening walk.");
+    expect(
+      screen.getByRole("button", { name: /edit what is happening/i }),
+    ).toHaveTextContent("The Rose Hill sign is damaged.");
+    expect(
+      screen.getByRole("checkbox", { name: /include your name/i }),
+    ).toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: /include your email/i }),
+    ).toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: /include your address/i }),
+    ).toBeChecked();
     expect(
       screen.queryByRole("heading", { name: /one clear request/i }),
     ).not.toBeInTheDocument();
