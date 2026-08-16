@@ -338,7 +338,7 @@ function HomeScreen({ state, dispatch }: SignedInScreenProps) {
                   type="button"
                   onClick={() => dispatch({ type: "openShare" })}
                 >
-                  Send →
+                  Review and Send →
                 </button>
               </>
             ) : (
@@ -399,7 +399,7 @@ function HomeScreen({ state, dispatch }: SignedInScreenProps) {
 function NeedCard({ need, dispatch }: { need: CivicNeed } & ScreenProps) {
   const isDiscovered = need.status === "discovered";
   const isSent = need.status === "sent";
-  const actionLabel = isDiscovered ? "Review" : "Review and send";
+  const actionLabel = isDiscovered ? "Review" : "Review and Send";
 
   return (
     <article className="need-card">

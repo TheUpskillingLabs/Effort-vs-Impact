@@ -131,11 +131,15 @@ describe("DemoExperience", () => {
     );
     expect(screen.queryByText(/^ready to send$/i)).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /review and send/i }),
+      screen.getByRole("button", {
+        name: /^review and send fix rose hill sign$/i,
+      }),
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole("button", { name: /review and send/i }),
+      screen.getByRole("button", {
+        name: /^review and send fix rose hill sign$/i,
+      }),
     );
     expect(
       screen.getByRole("textbox", { name: "Notes (optional)" }),
